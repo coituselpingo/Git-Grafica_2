@@ -493,7 +493,7 @@ class Point:
         if self.it_self_name is None:
             return False
         else:
-            return  self.it_self_name
+            return self.it_self_name
 
     def norm(self):
         return math.sqrt(self.x_component**2 + self.y_component**2 + self.z_component**2)
@@ -728,27 +728,24 @@ class GraphicalObject:
 
 ################################################################
 
-    def push_point(self, ref_point = Point(0,0,0),name = None):
+    def push_point(self, ref_point=Point(0, 0, 0), name=None):
         if name is None:
-            name = self.last_point_name()
+            if not ref_point.get_point_name():
+                name = self.last_point_name()
+                ref_point.set_point_name(name)
+            else:
+                pass
         else:
-            pass
+            ref_point.set_point_name(name)
 
-        if ref_point.get_point_name() is None:
-            name = self.last_edge_name()
-        else:
-            name = ref_point.get_point_name()
-
-        ref_point.set_point_name(name)
-
-        self.point_collection[name] = ref_point
+        self.point_collection[ref_point.get_point_name()] = ref_point
         self.point_set.add(ref_point)
 
-        print("\nPoint:\t(", ref_point.comp_x(), ",", ref_point.comp_y(), ",", ref_point.comp_z(), ") Add-ed /=/ Name:\t", name, "\n")
+        print("\nPoint:\t(", ref_point.comp_x(), ",", ref_point.comp_y(), ",", ref_point.comp_z(), ") Add-ed /=/ Name:\t", ref_point.get_point_name(), "\n")
 
 ################################################################
 
-    def get_point(self,name):
+    def get_point(self, name):
         return self.point_collection[name]
 
 ################################################################

@@ -181,7 +181,7 @@ def bresenham_3d(p1, p2):
 
     return output
 
-
+"""
 def main(p_0, p_i):
     GLUT.glutInit(sys.argv)
     GLUT.glutInitDisplayMode(GLUT.GLUT_SINGLE | GLUT.GLUT_RGBA | GLUT.GLUT_DEPTH)
@@ -238,4 +238,4 @@ def main(p_0, p_i):
 
 main([0, 0, 5], [10, 10, -5])
 
-
+"""
