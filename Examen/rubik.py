@@ -8,12 +8,96 @@ import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
 
 import sys
+import copy
 import numpy as np
 
 
-def matrix_90_rotate(matrix):
-    pass
+def cube_side_rotate(matrix, ref, giro):
+    carry_object = gs.GraphicalObject()
 
+    for i in matrix:
+        for j in i:
+            for faces in j:
+                for point in faces[:4]:
+                    print(point.get_coord())
+                    carry_object.push_point(point)
+    if ref == "i":
+        if giro == "+":
+            carry_object.update_center()
+            ref_center = copy.copy(carry_object.get_center())
+            carry_object.translate()
+            carry_object.rotate(90, "x", True)
+            carry_object.translate(ref_center)
+        elif giro == "-":
+            carry_object.update_center()
+            ref_center = copy.copy(carry_object.get_center())
+            carry_object.translate()
+            carry_object.rotate(-90, "x", True)
+            carry_object.translate(ref_center)
+        else:
+            pass
+
+    if ref == "j":
+        if giro == "+":
+            carry_object.update_center()
+            print(carry_object.get_center().get_coord())
+            ref_center = copy.copy(carry_object.get_center())
+            carry_object.translate()
+            carry_object.rotate(90, "y", True)
+            carry_object.translate(ref_center)
+        elif giro == "-":
+            carry_object.update_center()
+            ref_center = copy.copy(carry_object.get_center())
+            carry_object.translate()
+            carry_object.rotate(-90, "y", True)
+            carry_object.translate(ref_center)
+        else:
+            pass
+
+    if ref == "k":
+        if giro == "+":
+            carry_object.update_center()
+            ref_center = copy.copy(carry_object.get_center())
+            carry_object.translate()
+            carry_object.rotate(90, "z", True)
+            carry_object.translate(ref_center)
+        elif giro == "-":
+            carry_object.update_center()
+            ref_center = copy.copy(carry_object.get_center())
+            carry_object.translate()
+            carry_object.rotate(-90, "z", True)
+            carry_object.translate(ref_center)
+        else:
+            pass
+
+
+def matrix_90_rotate(matrix, giro):
+    if giro == "+":
+        carry_matrix = [[[], [], []],
+                        [[], [], []],
+                        [[], [], []]]
+        for j in range(0, 3):
+            for i in range(0, 3):
+                carry_matrix[2-j][i]= matrix[i][j]
+
+        for i in range(0,3):
+            for j in range(0,3):
+                matrix[i][j] = carry_matrix[i][j]
+
+    elif giro == "-":
+        carry_matrix = [[[], [], []],
+                        [[], [], []],
+                        [[], [], []]]
+        for j in range(0, 3):
+            for i in range(0, 3):
+                carry_matrix[j][2-i] = matrix[i][j]
+
+        for i in range(0, 3):
+            for j in range(0, 3):
+                matrix[i][j] = carry_matrix[i][j]
+
+    else:
+        pass
 
 
 class RubikCube:
@@ -330,106 +414,17 @@ class RubikCube:
                         print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord())
                     print("********************")
 
-    """
-    def rotate_size(self, id = "i2+"):
+    def rotate_side(self, id="j2+"):
         if id[0] == "i":
-            if id[1] == "0":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            elif id[1] == "1":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            elif id[2] == "2":
-                if id[2] == "+":
-                    carry_matrix = [[[],[],[]],
-                                    [[], [], []],
-                                    [[], [], []]]
-                    for k in range(0,3):
-                        for j in range(0,3):
-                            if k == 0:
-                                carry_matrix[2][j]=self.matrix_of_cubes[2][j][k]
-                            elif k == 1:
-                                carry_matrix[k][j] = self.matrix_of_cubes[2][j][k]
-                            elif k == 2:
-                                carry_matrix[0][j] = self.matrix_of_cubes[2][j][k]
-                            else:
-                                pass
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            else:
-                pass
+            cube_side_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[0], id[2])
+            matrix_90_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[2])
         elif id[0] == "j":
-            if id[1] == "0":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            elif id[1] == "1":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            elif id[2] == "2":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            else:
-                pass
-
+            cube_side_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[0], id[2])
+            matrix_90_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[2])
         elif id[0] == "k":
-            if id[1] == "0":
-                if id[2] == "+":
+            cube_side_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[0], id[2])
+            matrix_90_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[2])
 
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            elif id[1] == "1":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            elif id[2] == "2":
-                if id[2] == "+":
-
-                elif id[2] == "-":
-
-                else:
-                    pass
-
-            else:
-                pass
-
-        else:
-            pass
-    """
 
 
 rubik = RubikCube([0, 0, 0], 3)
@@ -467,7 +462,8 @@ def main(points):
     grid = gr.grid_gen(250, gs.Color(25 / 255, 150 / 250, 25 / 255))
     grid.show()
 
-    while True:
+    do = True
+    while do:
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         grid.plot()
 
@@ -487,13 +483,17 @@ def main(points):
             GL.glEnd()
             #first_time = False
 
+        rubik.rotate_side()
         rubik.get_cube().plot()
         rubik.plot_sub_faces()
+
 
         ########################################
 
         GL.glFlush()
         GLUT.glutPostRedisplay()
+
+        do = False
 
     GLUT.glutMainLoop()
 
