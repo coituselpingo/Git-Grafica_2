@@ -728,7 +728,7 @@ class GraphicalObject:
 
 ################################################################
 
-    def push_point(self, ref_point=Point(0, 0, 0), name=None):
+    def push_point(self, ref_point=Point(0, 0, 0), name=None, verbose = False):
         if name is None:
             if not ref_point.get_point_name():
                 name = self.last_point_name()
@@ -741,7 +741,8 @@ class GraphicalObject:
         self.point_collection[ref_point.get_point_name()] = ref_point
         self.point_set.add(ref_point)
 
-        print("\nPoint:\t(", ref_point.comp_x(), ",", ref_point.comp_y(), ",", ref_point.comp_z(), ") Add-ed /=/ Name:\t", ref_point.get_point_name(), "\n")
+        if verbose:
+            print("\nPoint:\t(", ref_point.comp_x(), ",", ref_point.comp_y(), ",", ref_point.comp_z(), ") Add-ed /=/ Name:\t", ref_point.get_point_name(), "\n")
 
 ################################################################
 
