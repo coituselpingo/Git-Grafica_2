@@ -2,7 +2,7 @@ import bresenham3d as br
 import quaternion as qd
 import graph_data_struct as gs
 import grid as gr
-
+import quaternion as QUAT
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
@@ -12,61 +12,133 @@ import copy
 import numpy as np
 
 
-def cube_side_rotate(matrix, ref, giro):
-    carry_object = gs.GraphicalObject()
+def set_color(data_color):
+    GL.glColor(data_color[0], data_color[1], data_color[2])
 
-    for i in matrix:
-        for j in i:
-            for faces in j:
-                for point in faces[:4]:
-                    print(point.get_coord())
-                    carry_object.push_point(point)
+
+def set_vertex(data_array):
+    GL.glVertex3f(data_array[0], data_array[1], data_array[2])
+
+
+def plot_face(data_face):
+    for ref in data_face:
+        GL.glBegin(GL.GL_LINES)
+        set_vertex(ref[0])
+        set_vertex(ref[1])
+        set_vertex(ref[2])
+        set_vertex(ref[3])
+        GL.glEnd()
+
+        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
+        set_color(ref[4])
+        GL.glBegin(GL.GL_POLYGON)
+        set_vertex(ref[0])
+        set_vertex(ref[1])
+        set_vertex(ref[2])
+        set_vertex(ref[3])
+        GL.glEnd()
+
+
+def plot_matrix_of_cubes(data):
+    for i in range(0, 3):
+        for j in range(0, 3):
+            for k in range(0, 3):
+                plot_face(data[i][j][k])
+
+
+def inspect_matrix_of_cubes(data):
+    for i in range(0, 3):
+        for j in range(0, 3):
+            for k in range(0, 3):
+                print(i, j, k, "\t")
+                for face in data[i][j][k]:
+                    m = face
+                    print(m[0], m[1], m[2], m[3], m[4])
+                print("********************")
+
+
+def get_side_center(side_format, len):
+
+    center = [0, 0, 0]
+
+    for index in range(0, 3):
+        if side_format[index] == 0:
+            center[index] += (len**2)/2
+        else:
+            center[index] += len*side_format[index] + len/2
+
+    print(center)
+    return center
+
+
+def translate_side(data_side, point, inverse=True):
+    if inverse:
+        point = [-1*point[0], -1*point[1], -1*point[2]]
+    else:
+        pass
+
+    for i in range(0, 3):
+        for j in range(0, 3):
+            for face in data_side[i][j]:
+                for vertex in face[0:4]:
+                    vertex[0] += point[0]
+
+                    vertex[1] += point[1]
+
+                    vertex[2] += point[2]
+
+
+def rotate_side(side, angle, eje):
+    for i in range(0, 3):
+        for j in range(0, 3):
+            for face in side[i][j]:
+                index = 0
+                for vertex in face[0:4]:
+                    face[index] = QUAT.rotate(vertex, eje, angle)
+                    index += 1
+
+
+def cube_side_rotate(side, ref, giro, format, len):
+
     if ref == "i":
         if giro == "+":
-            carry_object.update_center()
-            ref_center = copy.copy(carry_object.get_center())
-            carry_object.translate()
-            carry_object.rotate(90, "x", True)
-            carry_object.translate(ref_center)
+            carry_center = get_side_center(format, len)
+            translate_side(side, carry_center)
+            rotate_side(side, 90, "x")
+            translate_side(side, carry_center, inverse=False)
         elif giro == "-":
-            carry_object.update_center()
-            ref_center = copy.copy(carry_object.get_center())
-            carry_object.translate()
-            carry_object.rotate(-90, "x", True)
-            carry_object.translate(ref_center)
+            carry_center = get_side_center(format, len)
+            translate_side(side, carry_center)
+            rotate_side(side, -90, "x")
+            translate_side(side, carry_center, inverse=False)
         else:
             pass
 
     if ref == "j":
         if giro == "+":
-            carry_object.update_center()
-            print(carry_object.get_center().get_coord())
-            ref_center = copy.copy(carry_object.get_center())
-            carry_object.translate()
-            carry_object.rotate(90, "y", True)
-            carry_object.translate(ref_center)
+            carry_center = get_side_center(format, len)
+            translate_side(side, carry_center)
+            rotate_side(side, 90, "z")
+            translate_side(side, carry_center, inverse=False)
         elif giro == "-":
-            carry_object.update_center()
-            ref_center = copy.copy(carry_object.get_center())
-            carry_object.translate()
-            carry_object.rotate(-90, "y", True)
-            carry_object.translate(ref_center)
+            carry_center = get_side_center(format, len)
+            translate_side(side, carry_center)
+            rotate_side(side, -90, "z")
+            translate_side(side, carry_center, inverse=False)
         else:
             pass
 
     if ref == "k":
         if giro == "+":
-            carry_object.update_center()
-            ref_center = copy.copy(carry_object.get_center())
-            carry_object.translate()
-            carry_object.rotate(90, "z", True)
-            carry_object.translate(ref_center)
+            carry_center = get_side_center(format, len)
+            translate_side(side, carry_center)
+            rotate_side(side, 90, "z")
+            translate_side(side, carry_center, inverse=False)
         elif giro == "-":
-            carry_object.update_center()
-            ref_center = copy.copy(carry_object.get_center())
-            carry_object.translate()
-            carry_object.rotate(-90, "z", True)
-            carry_object.translate(ref_center)
+            carry_center = get_side_center(format, len)
+            translate_side(side, carry_center)
+            rotate_side(side, -90, "z")
+            translate_side(side, carry_center, inverse=False)
         else:
             pass
 
@@ -80,8 +152,8 @@ def matrix_90_rotate(matrix, giro):
             for i in range(0, 3):
                 carry_matrix[2-j][i]= matrix[i][j]
 
-        for i in range(0,3):
-            for j in range(0,3):
+        for i in range(0, 3):
+            for j in range(0, 3):
                 matrix[i][j] = carry_matrix[i][j]
 
     elif giro == "-":
@@ -100,6 +172,46 @@ def matrix_90_rotate(matrix, giro):
         pass
 
 
+class FunctionalRubik:
+
+    def __init__(self, matrix_of_cubes, len):
+        self.matrix_of_cubes = [[[[], [], []], [[], [], []], [[], [], []]],
+                                [[[], [], []], [[], [], []], [[], [], []]],
+                                [[[], [], []], [[], [], []], [[], [], []]]]
+        self.clone_and_steal(matrix_of_cubes)
+        self.constructor_len = len
+
+    def clone_and_steal(self, matrix_of_cubes):
+        for i in range(0, 3):
+            for j in range(0, 3):
+                for k in range(0, 3):
+                    for face in matrix_of_cubes[i][j][k]:
+                        carry = []
+                        for ref in face[0:4]:
+                            carry.append(ref.get_coord())
+                        carry.append(face[4].get_rgb())
+                        self.matrix_of_cubes[i][j][k].append(carry)
+
+    def get_matrix_of_cubes(self):
+        return self.matrix_of_cubes
+
+    def plot(self):
+        plot_matrix_of_cubes(self.matrix_of_cubes)
+
+    def rotate_side(self, id="j2+"):
+        if id[0] == "i":
+            cube_side_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[0], id[2], [int(id[1]), 0, 0], self.constructor_len)
+            matrix_90_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[2])
+        elif id[0] == "j":
+            cube_side_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[0], id[2], [0, int(id[1]), 0], self.constructor_len)
+            matrix_90_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[2])
+        elif id[0] == "k":
+            cube_side_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[0], id[2], [0, 0, int(id[1])], self.constructor_len)
+            matrix_90_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[2])
+
+
+
+
 class RubikCube:
 
     def __init__(self, down_vertex, edge_length):
@@ -114,12 +226,19 @@ class RubikCube:
         self.cube = gs.GraphicalObject()
 
         self.black = gs.Color()
+        self.black.set_name("black")
         self.white = gs.Color(1.0, 1.0, 1.0)
+        self.white.set_name("white")
         self.red = gs.Color(1.0, 0.0, 0.0)
+        self.red.set_name("red")
         self.green = gs.Color(0.0, 1.0, 0.0)
+        self.green.set_name("green")
         self.blue = gs.Color(0.0, 0.0, 1.0)
+        self.blue.set_name("blue")
         self.orange = gs.Color(1.0, 0.27, 0.0)
+        self.orange.set_name("orange")
         self.yellow = gs.Color(1.0, 1.0, 0.0)
+        self.yellow.set_name("yellow")
 
         self.list_of_faces = []
         self.list_of_sub_faces = []
@@ -253,6 +372,7 @@ class RubikCube:
         for m in self.list_of_sub_faces:
             print(id, "\t", m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord())
             id += 1
+
     def get_vertex_ref(self):
         carry = []
 
@@ -323,10 +443,10 @@ class RubikCube:
 
         for ref in f_cubes:
             m = ref[0]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
 
             m = ref[1]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
 
             print("****")
 
@@ -355,6 +475,15 @@ class RubikCube:
             r_cubes.append([r_list[index], r_list[index + 9]])
             index += 1
 
+        for ref in f_cubes:
+            m = ref[0]
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+
+            m = ref[1]
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+
+            print("****")
+
         index = 0
         x_index = -1
         y_index = -1
@@ -380,6 +509,15 @@ class RubikCube:
             d_cubes.append([d_list[index], d_list[index + 9]])
             index += 1
 
+        for ref in f_cubes:
+            m = ref[0]
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+
+            m = ref[1]
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+
+            print("****")
+
         index = 0
         x_index = -1
         z_index = -1
@@ -399,42 +537,37 @@ class RubikCube:
             y_index += 1
             index += 1
 
-        index_i = -1
-        for i in self.matrix_of_cubes:
-            index_i += 1
-            index_j = -1
-            for j in i:
-                index_j += 1
-                index_k = -1
-                for k in j:
-                    index_k += 1
-                    print(index_i, index_j, index_k, "\t")
-                    for face in k:
-                        m = face
-                        print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord())
-                    print("********************")
+        return self.matrix_of_cubes
 
     def rotate_side(self, id="j2+"):
         if id[0] == "i":
-            cube_side_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[0], id[2])
             matrix_90_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[2])
+            cube_side_rotate(self.matrix_of_cubes[int(id[1])][:][:], id[0], id[2])
         elif id[0] == "j":
-            cube_side_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[0], id[2])
             matrix_90_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[2])
+            cube_side_rotate(self.matrix_of_cubes[:][int(id[1])][:], id[0], id[2])
         elif id[0] == "k":
-            cube_side_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[0], id[2])
             matrix_90_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[2])
+            cube_side_rotate(self.matrix_of_cubes[:][:][int(id[1])], id[0], id[2])
 
 
 
 rubik = RubikCube([0, 0, 0], 3)
 rubik.standard_cube()
-
+test_cloud = rubik.get_cloud()
 print(rubik.get_vertex_ref())
 
-rubik.generate_matrix_of_cubes()
 
-test_cloud = rubik.get_cloud()
+functional_rubik = rubik.generate_matrix_of_cubes()
+
+final_rubik = FunctionalRubik(functional_rubik, 3)
+
+del functional_rubik
+
+inspect_matrix_of_cubes(final_rubik.get_matrix_of_cubes())
+
+
+################################################################
 
 
 def main(points):
@@ -481,12 +614,16 @@ def main(points):
                 GL.glVertex3f(ref_point[0], ref_point[1], ref_point[2])
                 #carry_ref = ref_point
             GL.glEnd()
-            #first_time = False
+            first_time = False
 
-        rubik.rotate_side()
+        """
+        rubik.rotate_side("i1+")
         rubik.get_cube().plot()
         rubik.plot_sub_faces()
+        """
 
+        #final_rubik.rotate_side()
+        final_rubik.plot()
 
         ########################################
 
