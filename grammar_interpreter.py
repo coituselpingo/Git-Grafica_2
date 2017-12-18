@@ -11,6 +11,8 @@ class Grammar:
         except:
             return None
 
+        self.type = 0
+
         self.base = star_case
 
         self.rule_list = []
@@ -57,10 +59,13 @@ class Grammar:
 
         return carry
 
-    def derivate(self, sentence, type):
-        if type == 0:
+    def setType(self, type):
+        self.type = type
+
+    def derivate(self, sentence):
+        if self.type == 0:
             return self.derivate_setence_regular(sentence)
-        elif type == 1:
+        elif self.type == 1:
             return self.derivate_setence_context(sentence)
         else:
             return None
@@ -72,18 +77,3 @@ class Grammar:
         return grew_sentence
 
 
-
-x = Grammar("F")
-x.set_rule("F:F+F--F+F")
-x.derivate("F", 0)
-
-x = Grammar("X")
-x.set_rule("X:F[+X]F[-X]+X")
-x.set_rule("F:FF")
-
-x.derivate("X", 0)
-
-carry = "X"
-for i in range(0, 7):
-    carry = x.derivate(carry, 0)
-    print(carry, "\n\n")

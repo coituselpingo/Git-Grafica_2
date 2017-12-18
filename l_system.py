@@ -24,12 +24,13 @@ class LSystem:
         self.angle = angle
         self.length = length
 
-    def makeGrew(self,age):
+    def makeGrew(self, age):
         self.graf_object = lp.l_systemGraphObject(self.grammar.make_grew(age),
                                                   self.origin, self.startAngle,
                                                   self.angle, self.length)
     def plotAge(self, age):
         self.makeGrew(age)
+        self.graf_object.show()
         self.graf_object.plot()
 
     def getGraficalObject(self):

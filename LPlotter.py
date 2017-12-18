@@ -12,8 +12,10 @@ from homework import control as control_menu
 import quaternion as quat
 import sys
 
+
 def angle_beteween_vector(vect1, vect2):
     return math.asin((vect2[1] - vect1[1]) / (vect2[0] - vect1[0]))
+
 
 def turtle_sentence(expresion):
     carry = ""
@@ -84,6 +86,7 @@ def turtle_plotter(expresion, origin, startAngle, angle, length):
 
     return edge_container
 
+
 def l_systemGraphObject(expresion, origin, startAngle, angle, length):
     edges = turtle_plotter(expresion, origin, startAngle, angle, length)
 
@@ -92,62 +95,5 @@ def l_systemGraphObject(expresion, origin, startAngle, angle, length):
     for pair in edges:
         outputObject.push_edge(gs.Point(pair[0][0], pair[0][1], pair[0][2]), gs.Point(pair[1][0], pair[1][1], pair[1][2]))
 
-    outputObject.show()
     return outputObject
 
-
-
-print(turtle_plotter("FFFF[+FF[+]FF[-]+]FFFF[-FF[+]FF[-]+]+FF[+]FF[-]+", [0, 0, 0], 90, 45, 5))
-
-print(turtle_sentence("FFFF[+FF[+X]FF[-X]+X]FFFF[-FF[+X]FF[-X]+X]+FF[+X]FF[-X]+X"))
-
-test_tree = l_systemGraphObject("FFFF[+FF[+]FF[-]+]FFFF[-FF[+]FF[-]+]+FF[+]FF[-]+", [0, 0, 0], 90, 45, 5)
-test_tree.show()
-list_of_objects = [test_tree]
-
-
-def main():
-    GLUT.glutInit(sys.argv)
-    GLUT.glutInitDisplayMode(GLUT.GLUT_SINGLE | GLUT.GLUT_RGBA | GLUT.GLUT_DEPTH)
-    GLUT.glutInitWindowSize(400, 400)
-    GLUT.glutInitWindowPosition(200, 200)
-
-    GLUT.glutCreateWindow("Grafica 2")
-
-    GL.glDepthFunc(GL.GL_LEQUAL)
-    GL.glEnable(GL.GL_DEPTH_TEST)
-    GL.glClearDepth(1.0)
-    GL.glClearColor(0.650, 0.780, 0.8, 0)
-    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-    GL.glMatrixMode(GL.GL_PROJECTION)
-    GL.glLoadIdentity()
-    GL.glMatrixMode(GL.GL_MODELVIEW)
-
-    GLU.gluPerspective(100, 1.0, 1.0, 100.0)
-    GL.glTranslatef(0.0, 0.0, 0.0)
-    GLU.gluLookAt(10, 10, 10, 0, 0, 0, 0, 1, 0)
-
-    grid = gr.grid_gen(100,gs.Color(0.5, 1, 1))
-
-    while True:
-
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-
-        grid.show()
-        grid.plot()
-
-        ########################################
-
-        for ref_object in list_of_objects:
-            ref_object.plot()
-
-        ########################################
-
-        GL.glFlush()
-        GLUT.glutPostRedisplay()
-
-        control_menu(list_of_objects)
-
-    GLUT.glutMainLoop()
-
-main()
