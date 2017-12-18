@@ -65,6 +65,13 @@ class Grammar:
         else:
             return None
 
+    def make_grew(self, age):
+        grew_sentence = self.base
+        for i in range(0,age):
+            grew_sentence = self.derivate(grew_sentence)
+        return grew_sentence
+
+
 
 x = Grammar("F")
 x.set_rule("F:F+F--F+F")
