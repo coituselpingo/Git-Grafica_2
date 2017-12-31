@@ -17,7 +17,6 @@
 #include <QtWidgets/QDial>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLCDNumber>
 #include <QtWidgets/QLabel>
@@ -28,7 +27,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -52,43 +50,51 @@ public:
     QGridLayout *gridLayout;
     QSpacerItem *verticalSpacer;
     QGridLayout *gridLayout_2;
-    QOpenGLWidget *openGLWidget;
+    QOpenGLWidget *sceneOpenGLWidget;
     QSpacerItem *horizontalSpacer;
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer_6;
-    QWidget *widget;
+    QWidget *layoutWidget1;
     QGridLayout *gridLayout_3;
     QSpacerItem *horizontalSpacer_3;
     QGridLayout *gridLayout_4;
     QSpacerItem *verticalSpacer_2;
-    QComboBox *comboBox;
-    QLabel *label_4;
+    QComboBox *graphObjectComboBox;
+    QLabel *graphObjectLabel;
     QSpacerItem *verticalSpacer_3;
     QFrame *line_3;
     QGridLayout *gridLayout_5;
-    QDial *dial;
-    QLabel *label;
+    QDial *objectXDial;
+    QLabel *objectXLabel;
     QGridLayout *gridLayout_6;
-    QDial *dial_2;
-    QLabel *label_2;
+    QDial *objectYDial;
+    QLabel *objectYLabel;
     QGridLayout *gridLayout_7;
-    QDial *dial_3;
-    QLabel *label_3;
+    QDial *objectZDial;
+    QLabel *objectZLabel;
     QFrame *line;
     QGridLayout *gridLayout_8;
     QSpacerItem *verticalSpacer_7;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
+    QPushButton *hidePushButton;
+    QPushButton *modifyPushButton;
     QSpacerItem *verticalSpacer_8;
     QFrame *line_2;
-    QHBoxLayout *horizontalLayout;
-    QGridLayout *gridLayout_9;
-    QSpacerItem *verticalSpacer_4;
-    QLCDNumber *lcdNumber;
-    QLabel *label_5;
+    QGridLayout *gridLayout_11;
+    QGridLayout *gridLayout_12;
     QSpacerItem *verticalSpacer_5;
-    QSlider *verticalSlider;
-    QSpacerItem *horizontalSpacer_4;
+    QSlider *zoomVerticalSlider;
+    QSpacerItem *verticalSpacer_11;
+    QSpacerItem *horizontalSpacer_6;
+    QGridLayout *gridLayout_9;
+    QLabel *povFieldLabel;
+    QSpacerItem *verticalSpacer_4;
+    QLCDNumber *zoomLcdNumber;
+    QLabel *zoomLabel;
+    QSpacerItem *verticalSpacer_9;
+    QLCDNumber *povFieldLcdNumber;
+    QSlider *povFieldHorizontalSlider;
+    QSpacerItem *verticalSpacer_10;
+    QGridLayout *gridLayout_10;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuLoad;
@@ -96,7 +102,6 @@ public:
     QMenu *menuEdit;
     QMenu *menuTools;
     QMenu *menuHelp;
-    QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -148,11 +153,11 @@ public:
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        openGLWidget = new QOpenGLWidget(layoutWidget);
-        openGLWidget->setObjectName(QStringLiteral("openGLWidget"));
-        openGLWidget->setEnabled(true);
+        sceneOpenGLWidget = new QOpenGLWidget(layoutWidget);
+        sceneOpenGLWidget->setObjectName(QStringLiteral("sceneOpenGLWidget"));
+        sceneOpenGLWidget->setEnabled(true);
 
-        gridLayout_2->addWidget(openGLWidget, 0, 1, 1, 1);
+        gridLayout_2->addWidget(sceneOpenGLWidget, 0, 1, 1, 1);
 
         horizontalSpacer = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -162,17 +167,17 @@ public:
 
         gridLayout_2->addItem(horizontalSpacer_2, 0, 2, 1, 1);
 
-        verticalSpacer_6 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout_2->addItem(verticalSpacer_6, 1, 1, 1, 1);
-
 
         gridLayout->addLayout(gridLayout_2, 1, 0, 1, 1);
 
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(0, 410, 1001, 141));
-        gridLayout_3 = new QGridLayout(widget);
+        verticalSpacer_6 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout->addItem(verticalSpacer_6, 2, 0, 1, 1);
+
+        layoutWidget1 = new QWidget(centralWidget);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(0, 410, 1001, 161));
+        gridLayout_3 = new QGridLayout(layoutWidget1);
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
@@ -188,15 +193,15 @@ public:
 
         gridLayout_4->addItem(verticalSpacer_2, 0, 0, 1, 1);
 
-        comboBox = new QComboBox(widget);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        graphObjectComboBox = new QComboBox(layoutWidget1);
+        graphObjectComboBox->setObjectName(QStringLiteral("graphObjectComboBox"));
 
-        gridLayout_4->addWidget(comboBox, 1, 0, 1, 1);
+        gridLayout_4->addWidget(graphObjectComboBox, 1, 0, 1, 1);
 
-        label_4 = new QLabel(widget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        graphObjectLabel = new QLabel(layoutWidget1);
+        graphObjectLabel->setObjectName(QStringLiteral("graphObjectLabel"));
 
-        gridLayout_4->addWidget(label_4, 2, 0, 1, 1);
+        gridLayout_4->addWidget(graphObjectLabel, 2, 0, 1, 1);
 
         verticalSpacer_3 = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
@@ -205,7 +210,7 @@ public:
 
         gridLayout_3->addLayout(gridLayout_4, 0, 1, 1, 1);
 
-        line_3 = new QFrame(widget);
+        line_3 = new QFrame(layoutWidget1);
         line_3->setObjectName(QStringLiteral("line_3"));
         line_3->setFrameShape(QFrame::VLine);
         line_3->setFrameShadow(QFrame::Sunken);
@@ -215,15 +220,15 @@ public:
         gridLayout_5 = new QGridLayout();
         gridLayout_5->setSpacing(6);
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        dial = new QDial(widget);
-        dial->setObjectName(QStringLiteral("dial"));
+        objectXDial = new QDial(layoutWidget1);
+        objectXDial->setObjectName(QStringLiteral("objectXDial"));
 
-        gridLayout_5->addWidget(dial, 0, 0, 1, 1);
+        gridLayout_5->addWidget(objectXDial, 0, 0, 1, 1);
 
-        label = new QLabel(widget);
-        label->setObjectName(QStringLiteral("label"));
+        objectXLabel = new QLabel(layoutWidget1);
+        objectXLabel->setObjectName(QStringLiteral("objectXLabel"));
 
-        gridLayout_5->addWidget(label, 1, 0, 1, 1);
+        gridLayout_5->addWidget(objectXLabel, 1, 0, 1, 1);
 
 
         gridLayout_3->addLayout(gridLayout_5, 0, 3, 1, 1);
@@ -231,15 +236,15 @@ public:
         gridLayout_6 = new QGridLayout();
         gridLayout_6->setSpacing(6);
         gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
-        dial_2 = new QDial(widget);
-        dial_2->setObjectName(QStringLiteral("dial_2"));
+        objectYDial = new QDial(layoutWidget1);
+        objectYDial->setObjectName(QStringLiteral("objectYDial"));
 
-        gridLayout_6->addWidget(dial_2, 0, 0, 1, 1);
+        gridLayout_6->addWidget(objectYDial, 0, 0, 1, 1);
 
-        label_2 = new QLabel(widget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        objectYLabel = new QLabel(layoutWidget1);
+        objectYLabel->setObjectName(QStringLiteral("objectYLabel"));
 
-        gridLayout_6->addWidget(label_2, 1, 0, 1, 1);
+        gridLayout_6->addWidget(objectYLabel, 1, 0, 1, 1);
 
 
         gridLayout_3->addLayout(gridLayout_6, 0, 4, 1, 1);
@@ -247,20 +252,20 @@ public:
         gridLayout_7 = new QGridLayout();
         gridLayout_7->setSpacing(6);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        dial_3 = new QDial(widget);
-        dial_3->setObjectName(QStringLiteral("dial_3"));
+        objectZDial = new QDial(layoutWidget1);
+        objectZDial->setObjectName(QStringLiteral("objectZDial"));
 
-        gridLayout_7->addWidget(dial_3, 0, 0, 1, 1);
+        gridLayout_7->addWidget(objectZDial, 0, 0, 1, 1);
 
-        label_3 = new QLabel(widget);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        objectZLabel = new QLabel(layoutWidget1);
+        objectZLabel->setObjectName(QStringLiteral("objectZLabel"));
 
-        gridLayout_7->addWidget(label_3, 1, 0, 1, 1);
+        gridLayout_7->addWidget(objectZLabel, 1, 0, 1, 1);
 
 
         gridLayout_3->addLayout(gridLayout_7, 0, 5, 1, 1);
 
-        line = new QFrame(widget);
+        line = new QFrame(layoutWidget1);
         line->setObjectName(QStringLiteral("line"));
         line->setFrameShape(QFrame::VLine);
         line->setFrameShadow(QFrame::Sunken);
@@ -274,15 +279,15 @@ public:
 
         gridLayout_8->addItem(verticalSpacer_7, 0, 0, 1, 1);
 
-        pushButton = new QPushButton(widget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        hidePushButton = new QPushButton(layoutWidget1);
+        hidePushButton->setObjectName(QStringLiteral("hidePushButton"));
 
-        gridLayout_8->addWidget(pushButton, 1, 0, 1, 1);
+        gridLayout_8->addWidget(hidePushButton, 1, 0, 1, 1);
 
-        pushButton_2 = new QPushButton(widget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        modifyPushButton = new QPushButton(layoutWidget1);
+        modifyPushButton->setObjectName(QStringLiteral("modifyPushButton"));
 
-        gridLayout_8->addWidget(pushButton_2, 2, 0, 1, 1);
+        gridLayout_8->addWidget(modifyPushButton, 2, 0, 1, 1);
 
         verticalSpacer_8 = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
@@ -291,52 +296,100 @@ public:
 
         gridLayout_3->addLayout(gridLayout_8, 0, 7, 1, 1);
 
-        line_2 = new QFrame(widget);
+        line_2 = new QFrame(layoutWidget1);
         line_2->setObjectName(QStringLiteral("line_2"));
         line_2->setFrameShape(QFrame::VLine);
         line_2->setFrameShadow(QFrame::Sunken);
 
-        gridLayout_3->addWidget(line_2, 0, 8, 1, 1);
+        gridLayout_3->addWidget(line_2, 0, 9, 1, 1);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        gridLayout_11 = new QGridLayout();
+        gridLayout_11->setSpacing(6);
+        gridLayout_11->setObjectName(QStringLiteral("gridLayout_11"));
+        gridLayout_12 = new QGridLayout();
+        gridLayout_12->setSpacing(6);
+        gridLayout_12->setObjectName(QStringLiteral("gridLayout_12"));
+        gridLayout_12->setSizeConstraint(QLayout::SetFixedSize);
+        verticalSpacer_5 = new QSpacerItem(15, 35, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_12->addItem(verticalSpacer_5, 2, 0, 1, 1);
+
+        zoomVerticalSlider = new QSlider(layoutWidget1);
+        zoomVerticalSlider->setObjectName(QStringLiteral("zoomVerticalSlider"));
+        sizePolicy.setHeightForWidth(zoomVerticalSlider->sizePolicy().hasHeightForWidth());
+        zoomVerticalSlider->setSizePolicy(sizePolicy);
+        zoomVerticalSlider->setOrientation(Qt::Vertical);
+
+        gridLayout_12->addWidget(zoomVerticalSlider, 1, 0, 1, 1);
+
+        verticalSpacer_11 = new QSpacerItem(15, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_12->addItem(verticalSpacer_11, 0, 0, 1, 1);
+
+        horizontalSpacer_6 = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        gridLayout_12->addItem(horizontalSpacer_6, 1, 1, 1, 1);
+
+
+        gridLayout_11->addLayout(gridLayout_12, 0, 1, 1, 1);
+
         gridLayout_9 = new QGridLayout();
         gridLayout_9->setSpacing(6);
         gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
-        verticalSpacer_4 = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        povFieldLabel = new QLabel(layoutWidget1);
+        povFieldLabel->setObjectName(QStringLiteral("povFieldLabel"));
+
+        gridLayout_9->addWidget(povFieldLabel, 6, 0, 1, 1);
+
+        verticalSpacer_4 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         gridLayout_9->addItem(verticalSpacer_4, 0, 0, 1, 1);
 
-        lcdNumber = new QLCDNumber(widget);
-        lcdNumber->setObjectName(QStringLiteral("lcdNumber"));
+        zoomLcdNumber = new QLCDNumber(layoutWidget1);
+        zoomLcdNumber->setObjectName(QStringLiteral("zoomLcdNumber"));
 
-        gridLayout_9->addWidget(lcdNumber, 1, 0, 1, 1);
+        gridLayout_9->addWidget(zoomLcdNumber, 1, 0, 1, 1);
 
-        label_5 = new QLabel(widget);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        zoomLabel = new QLabel(layoutWidget1);
+        zoomLabel->setObjectName(QStringLiteral("zoomLabel"));
 
-        gridLayout_9->addWidget(label_5, 2, 0, 1, 1);
+        gridLayout_9->addWidget(zoomLabel, 3, 0, 1, 1);
 
-        verticalSpacer_5 = new QSpacerItem(20, 35, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        verticalSpacer_9 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout_9->addItem(verticalSpacer_5, 3, 0, 1, 1);
+        gridLayout_9->addItem(verticalSpacer_9, 8, 0, 1, 1);
+
+        povFieldLcdNumber = new QLCDNumber(layoutWidget1);
+        povFieldLcdNumber->setObjectName(QStringLiteral("povFieldLcdNumber"));
+
+        gridLayout_9->addWidget(povFieldLcdNumber, 5, 0, 1, 1);
+
+        povFieldHorizontalSlider = new QSlider(layoutWidget1);
+        povFieldHorizontalSlider->setObjectName(QStringLiteral("povFieldHorizontalSlider"));
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(povFieldHorizontalSlider->sizePolicy().hasHeightForWidth());
+        povFieldHorizontalSlider->setSizePolicy(sizePolicy1);
+        povFieldHorizontalSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout_9->addWidget(povFieldHorizontalSlider, 7, 0, 1, 1);
+
+        verticalSpacer_10 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_9->addItem(verticalSpacer_10, 4, 0, 1, 1);
+
+        gridLayout_10 = new QGridLayout();
+        gridLayout_10->setSpacing(6);
+        gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
+
+        gridLayout_9->addLayout(gridLayout_10, 9, 0, 1, 1);
 
 
-        horizontalLayout->addLayout(gridLayout_9);
-
-        verticalSlider = new QSlider(widget);
-        verticalSlider->setObjectName(QStringLiteral("verticalSlider"));
-        verticalSlider->setOrientation(Qt::Vertical);
-
-        horizontalLayout->addWidget(verticalSlider);
+        gridLayout_11->addLayout(gridLayout_9, 0, 0, 1, 1);
 
 
-        gridLayout_3->addLayout(horizontalLayout, 0, 9, 1, 1);
-
-        horizontalSpacer_4 = new QSpacerItem(20, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-
-        gridLayout_3->addItem(horizontalSpacer_4, 0, 10, 1, 1);
+        gridLayout_3->addLayout(gridLayout_11, 0, 10, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
@@ -355,9 +408,6 @@ public:
         menuHelp = new QMenu(menuBar);
         menuHelp->setObjectName(QStringLiteral("menuHelp"));
         MainWindow->setMenuBar(menuBar);
-        statusBar = new QStatusBar(MainWindow);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
-        MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuEdit->menuAction());
@@ -372,7 +422,6 @@ public:
         menuSave->addAction(actionModel_2);
         menuEdit->addAction(actionObject_3);
         menuEdit->addAction(actionModel_3);
-        menuEdit->addAction(actionScene_POV);
         menuTools->addAction(actionPredefined_Forms);
         menuTools->addAction(actionPredefined_Scenes);
         menuHelp->addAction(actionAbout);
@@ -386,6 +435,9 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "G2-F", nullptr));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
+#ifndef QT_NO_WHATSTHIS
+        actionExit->setWhatsThis(QString());
+#endif // QT_NO_WHATSTHIS
         actionObject->setText(QApplication::translate("MainWindow", "Object", nullptr));
         actionModel->setText(QApplication::translate("MainWindow", "Model", nullptr));
         actionObject_2->setText(QApplication::translate("MainWindow", "Object", nullptr));
@@ -396,13 +448,14 @@ public:
         actionModel_3->setText(QApplication::translate("MainWindow", "Model", nullptr));
         actionScene_POV->setText(QApplication::translate("MainWindow", "Scene POV", nullptr));
         actionAbout->setText(QApplication::translate("MainWindow", "About", nullptr));
-        label_4->setText(QApplication::translate("MainWindow", "Object on Scene", nullptr));
-        label->setText(QApplication::translate("MainWindow", "Rotate   X", nullptr));
-        label_2->setText(QApplication::translate("MainWindow", "Rotate   Y", nullptr));
-        label_3->setText(QApplication::translate("MainWindow", "Rotate   Z", nullptr));
-        pushButton->setText(QApplication::translate("MainWindow", "Hide", nullptr));
-        pushButton_2->setText(QApplication::translate("MainWindow", "Modify", nullptr));
-        label_5->setText(QApplication::translate("MainWindow", "Zoom Ratio", nullptr));
+        graphObjectLabel->setText(QApplication::translate("MainWindow", "Object on Scene", nullptr));
+        objectXLabel->setText(QApplication::translate("MainWindow", "Rotate   X", nullptr));
+        objectYLabel->setText(QApplication::translate("MainWindow", "Rotate   Y", nullptr));
+        objectZLabel->setText(QApplication::translate("MainWindow", "Rotate   Z", nullptr));
+        hidePushButton->setText(QApplication::translate("MainWindow", "Hide", nullptr));
+        modifyPushButton->setText(QApplication::translate("MainWindow", "Modify", nullptr));
+        povFieldLabel->setText(QApplication::translate("MainWindow", "POV Field", nullptr));
+        zoomLabel->setText(QApplication::translate("MainWindow", "Zoom Ratio", nullptr));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuLoad->setTitle(QApplication::translate("MainWindow", "Load", nullptr));
         menuSave->setTitle(QApplication::translate("MainWindow", "Save", nullptr));

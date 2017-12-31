@@ -218,6 +218,7 @@ DIST          = /opt/Qt/5.10.0/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/spec_post.prf \
+		../QT_UI/.qmake.stash \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/default_pre.prf \
@@ -247,7 +248,7 @@ TARGET        = QT_UI
 first: all
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_createobject.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../QT_UI/QT_UI.pro /opt/Qt/5.10.0/gcc_64/mkspecs/linux-g++/qmake.conf /opt/Qt/5.10.0/gcc_64/mkspecs/features/spec_pre.prf \
@@ -413,6 +414,7 @@ Makefile: ../QT_UI/QT_UI.pro /opt/Qt/5.10.0/gcc_64/mkspecs/linux-g++/qmake.conf 
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/Qt/5.10.0/gcc_64/mkspecs/features/default_pre.prf \
@@ -600,6 +602,7 @@ Makefile: ../QT_UI/QT_UI.pro /opt/Qt/5.10.0/gcc_64/mkspecs/linux-g++/qmake.conf 
 /opt/Qt/5.10.0/gcc_64/mkspecs/features/qt_config.prf:
 /opt/Qt/5.10.0/gcc_64/mkspecs/linux-g++/qmake.conf:
 /opt/Qt/5.10.0/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/Qt/5.10.0/gcc_64/mkspecs/features/exclusive_builds.prf:
 /opt/Qt/5.10.0/gcc_64/mkspecs/features/toolchain.prf:
 /opt/Qt/5.10.0/gcc_64/mkspecs/features/default_pre.prf:
@@ -640,7 +643,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents /opt/Qt/5.10.0/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../QT_UI/mainwindow.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../QT_UI/main.cpp ../QT_UI/mainwindow.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../QT_UI/mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../QT_UI/mainwindow.ui ../QT_UI/createobject.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -790,12 +793,16 @@ compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_mainwindow.h ui_createobject.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
+	-$(DEL_FILE) ui_mainwindow.h ui_createobject.h
 ui_mainwindow.h: ../QT_UI/mainwindow.ui \
 		/opt/Qt/5.10.0/gcc_64/bin/uic
 	/opt/Qt/5.10.0/gcc_64/bin/uic ../QT_UI/mainwindow.ui -o ui_mainwindow.h
+
+ui_createobject.h: ../QT_UI/createobject.ui \
+		/opt/Qt/5.10.0/gcc_64/bin/uic
+	/opt/Qt/5.10.0/gcc_64/bin/uic ../QT_UI/createobject.ui -o ui_createobject.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -1030,7 +1037,72 @@ mainwindow.o: ../QT_UI/mainwindow.cpp ../QT_UI/mainwindow.h \
 		/opt/Qt/5.10.0/gcc_64/include/QtGui/qtouchdevice.h \
 		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qtabwidget.h \
 		/opt/Qt/5.10.0/gcc_64/include/QtGui/qicon.h \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/QVariant \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QAction \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qaction.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QApplication \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qapplication.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/qcoreapplication.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/qeventloop.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qguiapplication.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qinputmethod.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QButtonGroup \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QComboBox \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qcombobox.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qstyleoption.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qvalidator.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qslider.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qabstractslider.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qstyle.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qtabbar.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qrubberband.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QDial \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qdial.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QFrame \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QGridLayout \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qlayout.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QHBoxLayout \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QHeaderView \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qheaderview.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QLCDNumber \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qlcdnumber.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QLabel \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qlabel.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QMenu \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qmenu.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QMenuBar \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qmenubar.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QOpenGLWidget \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qopenglwidget.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QWidget \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/QSurfaceFormat \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qsurfaceformat.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qopengl.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtCore/qt_windows.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qopengles2ext.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtGui/qopenglext.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QPushButton \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qpushbutton.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QSlider \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QSpacerItem \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/QStatusBar \
+		/opt/Qt/5.10.0/gcc_64/include/QtWidgets/qstatusbar.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../QT_UI/mainwindow.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

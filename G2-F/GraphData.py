@@ -11,17 +11,19 @@ from OpenGL import GLUT
 import quaternion as QUAT
 
 
-def to_seg(value,precs = 4):
-    seg_value = (360/(2*math.pi))*value
+def to_seg(value, precision=4):
+    seg_value = (360 / (2 * math.pi)) * value
     hour = int(seg_value)
-    min_value = (seg_value - hour)*60
+    min_value = (seg_value - hour) * 60
     min = int(min_value)
-    sec = round((min_value - min)*60 , precs)
+    sec = round((min_value - min) * 60, precision)
 
     return [hour, min, sec]
 
+
 def float_to_hex(value):
-    return value*255
+    return value * 255
+
 
 def plot_list(list_of_objects):
     os.system("clear")
@@ -38,7 +40,7 @@ def plot_list(list_of_objects):
         \n Si el Objeto es Visible , se oculta
         Si esta  oculto, se hace visible
         Opcion >>>:\t
-        
+
         """)
 
         try:
@@ -67,7 +69,6 @@ def plot_list(list_of_objects):
 
 
 def control(list_of_objects, glu_context=GLU):
-
     os.system("clear")
 
     print("LISTA DE OBJETOS DIBUJADOS\n\n")
@@ -216,70 +217,70 @@ def control(list_of_objects, glu_context=GLU):
             glu_context.gluLookAt(to_point[0], to_point[1], to_point[2], 0, 0, 0, 0, 1, 0)
         """
 
+
 class Color:
-    R = 0.0
-    G = 0.0
-    B = 0.0
-    id_name = ""
+    r = 0.0
+    g = 0.0
+    b = 0.0
+    color_name = ""
 
     def __init__(self, r=0.0, g=0.0, b=0.0):
-        self.R = r
-        self.G = g
-        self.B = b
+        self.r = r
+        self.g = g
+        self.b = b
 
-        self.id_name = "Void"
+        self.color_name = None
 
     def get_rgb(self):
-        return [self.R, self.G, self.B]
+        return [self.r, self.g, self.b]
 
     def get_r(self):
-        return self.R
+        return self.r
 
     def get_g(self):
-        return self.G
+        return self.g
 
     def get_b(self):
-        return self.B
+        return self.b
 
     def set_name(self, name):
-        self.id_name = name
+        self.color_name = name
 
     def set_color(self, color):
-        self.R = color[0]
-        self.G = color[1]
-        self.B = color[2]
+        self.r = color[0]
+        self.g = color[1]
+        self.b = color[2]
 
     def get_name(self):
-        return self.id_name
+        return self.color_name
 
     def set_entity_color(self):
-        GL.glColor3f(self.R, self.G, self.B)
+        GL.glColor3f(self.r, self.g, self.b)
 
-    def color_mode(self,type=None):
-        if type is None:
-            type = 'rgb'
+    def color_mode(self, color_mode=None):
+        if color_mode is None:
+            color_mode = 'rgb'
         else:
             pass
 
-        if type == 'rgb':
+        if color_mode == 'rgb':
             pass
-
-        elif type == 'cmyk':
+        elif color_mode == 'cmyk':
             self.convert_cmyk()
-        elif type == 'yuv':
+        elif color_mode == 'yuv':
             self.convert_yuv()
-        elif type == 'hsl':
+        elif color_mode == 'hsl':
             self.convert_hsl()
-        elif type == 'hsv':
+        elif color_mode == 'hsv':
             self.convert_hsv()
         else:
-            print("ERROR - Modo de Color Invalido")
+            print("ERROR - Invalid Color Mode")
             pass
 
     def convert_cmyk(self):
-        r_p = float_to_hex(self.R)/255
-        g_p = float_to_hex(self.G)/255
-        b_p = float_to_hex(self.B)/255
+        r_p = float_to_hex(self.r) / 255
+        g_p = float_to_hex(self.g) / 255
+        b_p = float_to_hex(self.b) / 255
 
         k = 1 - max([r_p, g_p, b_p])
 
@@ -290,9 +291,9 @@ class Color:
             m = (1 - g_p - k) / (1 - k)
             y = (1 - b_p - k) / (1 - k)
 
-        self.R = c
-        self.G = m
-        self.B = y
+        self.r = c
+        self.g = m
+        self.b = y
 
         """#SI SE DESEA VOLVER A RGB
         self.R = (1-c)*(1-k)
@@ -304,18 +305,18 @@ class Color:
         yuv_matrix = [[0.299, 0.587, 0.114],
                       [-0.147, -0.289, 0.436],
                       [0.615, -0.515, -0.100]]
-        rgb_vector = [self.R, self.G, self.B]
+        rgb_vector = [self.r, self.g, self.b]
 
         yuv_matrix = np.matrix(yuv_matrix)
         rgb_vector = np.matrix(rgb_vector)
 
-        yuv_vector = yuv_matrix*rgb_vector.T
+        yuv_vector = yuv_matrix * rgb_vector.T
 
         yuv_vector = yuv_vector.T
         yuv_vector = yuv_vector.tolist()
-        self.R = yuv_vector[0][0]
-        self.G = yuv_vector[0][1]
-        self.B = yuv_vector[0][2]
+        self.r = yuv_vector[0][0]
+        self.g = yuv_vector[0][1]
+        self.b = yuv_vector[0][2]
 
         """#SI SE DESEA VOLVER A RGB
         rgb_matrix = [[1, 0, 1.14],
@@ -324,7 +325,7 @@ class Color:
         rgb_matrix = np.matrix(rgb_matrix)
         yuv_vector = np.matrix(yuv_vector[0])
         yuv_vector = yuv_vector.T
-        
+
         rgb_vector = rgb_matrix*yuv_vector
         rgb_vector = rgb_vector.T
         rgb_vector = rgb_vector.tolist()
@@ -335,9 +336,9 @@ class Color:
         """
 
     def convert_hsl(self):
-        r_p = float_to_hex(self.R) / 255
-        g_p = float_to_hex(self.G) / 255
-        b_p = float_to_hex(self.B) / 255
+        r_p = float_to_hex(self.r) / 255
+        g_p = float_to_hex(self.g) / 255
+        b_p = float_to_hex(self.b) / 255
 
         max_value = max([r_p, g_p, b_p])
         min_value = min([r_p, g_p, b_p])
@@ -345,24 +346,24 @@ class Color:
         if max_value == min_value:
             H = 0
         elif max_value == r_p:
-            H = (60 * ((g_p - b_p)/(max_value - min_value)) +360) % 360
+            H = (60 * ((g_p - b_p) / (max_value - min_value)) + 360) % 360
         elif max_value == g_p:
-            H = 60 * ((b_p - r_p)/(max_value - min_value)) + 120
+            H = 60 * ((b_p - r_p) / (max_value - min_value)) + 120
         elif max_value == b_p:
-            H = 60 * ((r_p - g_p)/(max_value - min_value)) +240
+            H = 60 * ((r_p - g_p) / (max_value - min_value)) + 240
 
-        L = (max_value + min_value)/2
+        L = (max_value + min_value) / 2
 
         if max_value == min_value:
             S = 0
         elif L <= 0.5:
-            S = (max_value - min_value)/(2*L)
+            S = (max_value - min_value) / (2 * L)
         elif L > 0.5:
             S = (max_value - min_value) / (2 - (2 * L))
 
-        self.R = H
-        self.G = S
-        self.B = L
+        self.r = H
+        self.g = S
+        self.b = L
 
         """#SI SE DESEA VOLVER A RGB
         C = (1 - math.fabs(2*L - 1)) * S
@@ -394,10 +395,11 @@ class Color:
             self.G = 0 + m
             self.B = X + m
         """
+
     def convert_hsv(self):
-        r_p = float_to_hex(self.R) / 255
-        g_p = float_to_hex(self.G) / 255
-        b_p = float_to_hex(self.B) / 255
+        r_p = float_to_hex(self.r) / 255
+        g_p = float_to_hex(self.g) / 255
+        b_p = float_to_hex(self.b) / 255
 
         max_value = max([r_p, g_p, b_p])
         min_value = min([r_p, g_p, b_p])
@@ -405,7 +407,7 @@ class Color:
         if max_value == min_value:
             H = 0
         elif max_value == r_p:
-            H = 60 *(((g_p - b_p) / (max_value - min_value)) % 6)
+            H = 60 * (((g_p - b_p) / (max_value - min_value)) % 6)
         elif max_value == g_p:
             H = 60 * (((b_p - r_p) / (max_value - min_value)) + 2)
         elif max_value == b_p:
@@ -414,13 +416,13 @@ class Color:
         if max_value == 0:
             S = 0
         else:
-            S = (max_value-min_value)/max_value
+            S = (max_value - min_value) / max_value
 
         V = max_value
 
-        self.R = H
-        self.G = S
-        self.B = V
+        self.r = H
+        self.g = S
+        self.b = V
 
         """#SI SE DESEA VOLVER A RGB
         C = V * S
@@ -453,119 +455,178 @@ class Color:
             self.B = X + m
         """
 
+    def __hash__(self):
+        return hash(self.r, self.g, self.b, self.color_name)
+
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__()
+
+    def __str__(self):
+        return ("\nColor Name\t", self.color_name,
+                "\tR\t", self.r,
+                "\tG\t", self.g,
+                "\tB\t", self.b)
+
 
 class Point:
     x_component = 0
     y_component = 0
     z_component = 0
 
-    it_self_name = ""
+    point_name = ""
 
     def __init__(self, x=0, y=0, z=0):
         self.x_component = x
         self.y_component = y
         self.z_component = z
 
-        self.it_self_name = None
+        self.point_name = None
 
-    def comp_x(self):
+    def get_x(self):
         return self.x_component
 
-    def comp_y(self):
+    def get_y(self):
         return self.y_component
 
-    def comp_z(self):
+    def get_z(self):
         return self.z_component
 
     def get_coord(self):
         return [self.x_component, self.y_component, self.z_component]
 
-    def get_unitary(self):
-        return [self.x_component/self.norm(), self.y_component/self.norm(), self.z_component/self.norm()]
+    def get_unitary(self, ref_point=None):
+        if ref_point is None:
+            ref_point = Point()
+        else:
+            pass
+
+        norm = self.norm(ref_point)
+
+        if norm != 0:
+            return [self.distance_x(ref_point) / norm,
+                    self.distance_y(ref_point) / norm,
+                    self.distance_z(ref_point) / norm]
+        else:
+            return [0, 0, 0]
 
     def conjugate(self):
         self.x_component = -1 * self.x_component
         self.y_component = -1 * self.y_component
         self.z_component = -1 * self.z_component
 
-    def set_coords(self, coords):
-        self.x_component = coords[0]
-        self.y_component = coords[1]
-        self.z_component = coords[2]
+    def set_coord(self, coord):
+        self.x_component = coord[0]
+        self.y_component = coord[1]
+        self.z_component = coord[2]
 
     def set_point_name(self, name=None):
         if name is None:
             print("No Label Name Changed")
         else:
-            self.it_self_name = name
+            self.point_name = name
 
     def get_point_name(self):
-        if self.it_self_name is None:
+        if self.point_name is None:
             return False
         else:
-            return self.it_self_name
+            return self.point_name
 
-    def norm(self):
-        return math.sqrt(self.x_component**2 + self.y_component**2 + self.z_component**2)
-
-    def angle_x(self, reference_point = None):
-        if reference_point is None:
-            reference_point = Point(0, 0, 0)
+    def norm(self, ref_point=None):
+        if ref_point is None:
+            ref_point = Point()
         else:
             pass
 
-        a_x = self.x_component - reference_point.comp_x()
-        b_y = self.y_component - reference_point.comp_y()
-        c_z = self.z_component - reference_point.comp_z()
+        return math.sqrt(self.distance_x(ref_point) ** 2 +
+                         self.distance_y(ref_point) ** 2 +
+                         self.distance_z(ref_point) ** 2)
 
-        norm  = math.sqrt(a_x**2 + b_y**2 + c_z**2)
+    def distance_x(self, reference_point=None):
+        return reference_point.get_x() - self.x_component
 
-        return math.acos(a_x/norm)
+    def distance_y(self, reference_point=None):
+        return reference_point.get_y() - self.y_component
+
+    def distance_z(self, reference_point=None):
+        return reference_point.get_z() - self.z_component
+
+    def angle_x(self, reference_point=None):
+        if reference_point is None:
+            reference_point = Point()
+        else:
+            pass
+
+        return math.acos(self.distance_x(reference_point) / self.norm(reference_point))
 
     def angle_y(self, reference_point=None):
         if reference_point is None:
-            reference_point = Point(0, 0, 0)
+            reference_point = Point()
         else:
             pass
 
-        a_x = self.x_component - reference_point.comp_x()
-        b_y = self.y_component - reference_point.comp_y()
-        c_z = self.z_component - reference_point.comp_z()
+        return math.acos(self.distance_y(reference_point) / self.norm(reference_point))
 
-        norm = math.sqrt(a_x**2 + b_y**2 + c_z**2)
-
-        return math.acos(b_y/norm)
-
-    def angle_z(self, reference_point = None):
+    def angle_z(self, reference_point=None):
         if reference_point is None:
-            reference_point = Point(0, 0, 0)
+            reference_point = Point()
         else:
             pass
 
-        a_x = self.x_component - reference_point.comp_x()
-        b_y = self.y_component - reference_point.comp_y()
-        c_z = self.z_component - reference_point.comp_z()
+        return math.acos(self.distance_z(reference_point) / self.norm(reference_point))
 
-        norm  = math.sqrt(a_x**2 + b_y**2 + c_z**2)
+    def __hash__(self):
+        return hash(self.x_component,
+                    self.y_component,
+                    self.z_component,
+                    self.point_name)
 
-        return math.acos(c_z/norm)
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__()
 
-    def update(self, x=0, y=0, z=0):
-        self.x_component = x
-        self.y_component = y
-        self.z_component = z
+    def __str__(self):
+        print("\nPoint Name\t", self.point_name,
+              "\tX\t", self.x_component,
+              "\tY\t", self.y_component,
+              "\tZ\t", self.z_component)
+
+
+class SetPoint:
+    def __init__(self):
+        self.internal_set = set([])
+
+    def push(self, ref_point):
+        try:
+            ref_point.get_point_name()
+
+            if ref_point in self.internal_set:
+                carry = list(self.internal_set)
+                return carry[carry.index(ref_point)]
+            else:
+                self.internal_set.add(ref_point)
+                return ref_point
+        except:
+            return None
+
+    def get_set(self):
+        return self.internal_set
+
+    def get_set_list(self):
+        return list(self.internal_set)
+
+    def __str__(self):
+        for i in self.get_set_list():
+            print(i)
 
 
 class Edge:
-
     point_A = None
     point_B = None
     edge_norm = 0
     color = None
 
-    it_self_name = ""
+    edge_name = ""
 
-    def __init__(self,p_a=None, p_b=None, color=None):
+    def __init__(self, p_a=None, p_b=None, color=None):
         if p_a is None:
             p_a = Point(0, 0, 0)
         else:
@@ -584,21 +645,23 @@ class Edge:
 
         self.color = color
 
-        self.it_self_name = None
+        self.edge_name = None
 
         self.edge_norm = 0
+
+        self.norm()
 
     def set_edge_name(self, name=None):
         if name is None:
             print("No Label Name Changed")
         else:
-            self.it_self_name = name
+            self.edge_name = name
 
     def get_edge_name(self):
-        if self.it_self_name is None:
+        if self.edge_name is None:
             return False
         else:
-            return self.it_self_name
+            return self.edge_name
 
     def set_color(self, color):
         self.color = color
@@ -607,28 +670,31 @@ class Edge:
         return self.color
 
     def dist_x(self):
-        return self.point_B.comp_x() - self.point_A.comp_x()
+        return self.point_B.distance_x(self.point_A)
 
     def dist_y(self):
-        return self.point_B.comp_y() - self.point_A.comp_y()
+        return self.point_B.distance_y(self.point_A)
 
     def dist_z(self):
-        return self.point_B.comp_z() - self.point_A.comp_z()
+        return self.point_B.distance_z(self.point_A)
 
     def norm(self):
+        self.edge_norm = self.point_B.norm(self.point_A)
 
-        self.edge_norm = math.sqrt(self.dist_x()**2 + self.dist_y()**2 + self.dist_z()**2)
-
+    def get_norm(self):
         return self.edge_norm
 
+    def unitary(self):
+        return self.point_B.get_unitary(self.point_A)
+
     def angle_x(self):
-        return math.acos(self.dist_x()/self.norm())
+        return self.point_B.angle_x(self.point_A)
 
     def angle_y(self):
-        return math.acos(self.dist_y() / self.norm())
+        return self.point_B.angle_y(self.point_A)
 
     def angle_z(self):
-        return math.acos(self.dist_z() / self.norm())
+        return self.point_B.angle_z(self.point_A)
 
     def get_point_a(self):
         return self.point_A
@@ -636,71 +702,85 @@ class Edge:
     def get_point_b(self):
         return self.point_B
 
+    def __hash__(self):
+        return hash(self.point_A,
+                    self.point_B,
+                    self.edge_norm,
+                    self.color,
+                    self.edge_name)
+
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__()
+
+    def __str__(self):
+        print("\nName\t", self.edge_name,
+              "\tPoint A\t", self.point_A,
+              "\tPoint B\t", self.point_B,
+              "\tColor\t", self.color)
+
+
+class SetEdge:
+    def __init__(self):
+        self.internal_set = set([])
+
+    def push(self, ref_edge):
+        try:
+            ref_edge.get_edge_name()
+
+            if ref_edge in self.internal_set:
+                carry = list(self.internal_set)
+                return carry[carry.index(ref_edge)]
+            else:
+                self.internal_set.add(ref_edge)
+                return ref_edge
+        except:
+            return None
+
+    def get_set(self):
+        return self.internal_set
+
+    def get_set_list(self):
+        return list(self.internal_set)
+
+    def __str__(self):
+        for i in self.get_set_list():
+            print(i)
+
+
 class GraphicalObject:
-
-    point_collection = {}
-    edge_collection = {}
-
-    point_set = []
-
-    last_point_index = 0
-    last_edge_index = 0
+    point_set_collection = SetPoint()
+    edge_set_collection = SetEdge()
 
     center = None
 
-    precs = 3
+    precision = 3
 
-    name = ""
+    graphical_object_name = ""
 
     visible = False
 
     def __init__(self):
-        self.point_set = set(self.point_set)
-        self.last_point_index = 0
-        self.last_edge_index = 0
-        self.center = Point(0, 0, 0)
+        self.center = Point()
 
-        self.point_collection = {}
-        self.edge_collection = {}
+        self.point_set_collection = SetPoint()
+        self.edge_set_collection = SetEdge()
 
-        self.precs = 3
+        self.precision = 3
 
-        self.name = "Void"
+        self.graphical_object_name = None
         self.visible = False
-################################################################
 
-    def set_precs(self, precs):
-        self.precs = precs
+    def set_precision(self, precision):
+        self.precision = precision
 
-    def get_precs(self):
-        return self.precs
-
-################################################################
+    def get_precision(self):
+        return self.precision
 
     def set_name(self, new_name):
-        self.name = new_name
+        self.graphical_object_name = new_name
 
     def get_name(self):
-        return self.name
-
-################################################################
-    def update_last_point_index(self):
-        self.last_point_index += 1
-
-    def last_point_name(self):
-        self.update_last_point_index()
-        return "p_" + str(self.last_point_index - 1)
-
-###*********************************************************###
-
-    def update_last_edge_index(self):
-        self.last_edge_index += 1
-
-    def last_edge_name(self):
-        self.update_last_edge_index()
-        return "e_" + str(self.last_edge_index - 1)
-
-################################################################
+        return self.graphical_object_name
 
     def show(self):
         self.visible = True
@@ -711,98 +791,34 @@ class GraphicalObject:
     def is_visible(self):
         return self.visible
 
-################################################################
+    def __update_center(self):
+        auxiliary_list = self.point_set_collection.get_set_list()
 
-    def update_center(self):
-        auxiliar_list = list(self.point_set)
-
-        num_of_points = len(auxiliar_list)
+        num_of_points = len(auxiliary_list)
 
         x_carry = 0
         y_carry = 0
         z_carry = 0
 
-        for point_ref in auxiliar_list:
+        for point_ref in auxiliary_list:
             x_carry += point_ref.comp_x()
             y_carry += point_ref.comp_y()
             z_carry += point_ref.comp_z()
 
-        x_carry = round(x_carry / num_of_points, self.precs)
-        y_carry = round(y_carry / num_of_points, self.precs)
-        z_carry = round(z_carry / num_of_points, self.precs)
+        x_carry = round(x_carry / num_of_points, self.precision)
+        y_carry = round(y_carry / num_of_points, self.precision)
+        z_carry = round(z_carry / num_of_points, self.precision)
 
-        self.center.update(x_carry, y_carry, z_carry)
+        self.center.set_coord([x_carry, y_carry, z_carry])
 
     def get_center(self):
+        self.__update_center()
         return self.center
 
-################################################################
-
-    def push_point(self, ref_point=Point(0, 0, 0), name=None, verbose = False):
-        if name is None:
-            if not ref_point.get_point_name():
-                name = self.last_point_name()
-                ref_point.set_point_name(name)
-            else:
-                pass
-        else:
-            ref_point.set_point_name(name)
-
-        self.point_collection[ref_point.get_point_name()] = ref_point
-        self.point_set.add(ref_point)
-
-        if verbose:
-            print("\nPoint:\t(", ref_point.comp_x(), ",", ref_point.comp_y(), ",", ref_point.comp_z(), ") Add-ed /=/ Name:\t", ref_point.get_point_name(), "\n")
-
-################################################################
-
-    def get_point(self, name):
-        return self.point_collection[name]
-
-################################################################
-
     def push_edge(self, point_1, point_2, color=None, name=None, verbose=False):
-
-        try:
-            self.point_collection[point_1.get_point_name()]
-        except:
-            if verbose:
-                print("\nError - No Point with name ", point_1.get_point_name())
-
-            point_1.set_point_name(self.last_point_name())
-            self.point_collection[point_1.get_point_name()] = point_1
-            self.point_set.add(point_1)
-
-            if verbose:
-                print("\nCreate Point ", point_1.get_point_name())
-
-            if verbose:
-                print(self.last_point_index)
-
-        try:
-            self.point_collection[point_2.get_point_name()]
-        except:
-            if verbose:
-                print("\nError - No Point with name ", point_2.get_point_name())
-
-            point_2.set_point_name(self.last_point_name())
-            self.point_collection[point_2.get_point_name()] = point_2
-            self.point_set.add(point_2)
-
-            if verbose:
-                print("\n Create Point ", point_2.get_point_name())
-                print(self.last_point_index)
-
-        if name is None:
-            name = self.last_edge_name()
-        else:
-            pass
-
         ref_edge = Edge(point_1, point_2, color)
         ref_edge.set_edge_name(name)
-        self.edge_collection[name] = ref_edge
-
-################################################################
+        self.edge_set_collection[name] = ref_edge
 
     def init(self):
         pass
@@ -814,27 +830,25 @@ class GraphicalObject:
             return None
 
         gl_context.glBegin(GL.GL_LINES)
-        for edge_name, edge_ref in self.edge_collection.items():
-
+        for edge_ref in self.edge_set_collection.get_set_list():
             color = edge_ref.get_color()
 
             gl_context.glColor3f(color.get_r(), color.get_g(), color.get_b())
 
-            gl_context.glVertex3f(edge_ref.get_point_a().comp_x(), edge_ref.get_point_a().comp_y(), edge_ref.get_point_a().comp_z())
-            gl_context.glVertex3f(edge_ref.get_point_b().comp_x(), edge_ref.get_point_b().comp_y(), edge_ref.get_point_b().comp_z())
+            gl_context.glVertex3f(edge_ref.get_point_a().comp_x(), edge_ref.get_point_a().comp_y(),
+                                  edge_ref.get_point_a().comp_z())
+            gl_context.glVertex3f(edge_ref.get_point_b().comp_x(), edge_ref.get_point_b().comp_y(),
+                                  edge_ref.get_point_b().comp_z())
 
         gl_context.glEnd()
 
-################################################################
-
     def rotate(self, angle=0, vector=None, its_unitary=False, sign="+", verbose=False):
         if vector is None:
-            self.update_center()
-            vector = self.center.get_coord()
+            vector = self.get_center()
         else:
             pass
 
-        for point_ref in list(self.point_set):
+        for point_ref in self.point_set_collection.get_set_list():
             carry_coord = QUAT.rotate(point_ref.get_coord(), vector, angle, sign, its_unitary, verbose)
             point_ref.update(carry_coord[0], carry_coord[1], carry_coord[2])
 
@@ -844,43 +858,33 @@ class GraphicalObject:
         else:
             fact_vector = [gen_fact, gen_fact, gen_fact]
 
-        for label_ref, point_ref in self.point_collection.items():
-            carry_coord = point_ref.get_coord()
-            point_ref.update(carry_coord[0]*fact_vector[0], carry_coord[1]*fact_vector[1], carry_coord[2]*fact_vector[2])
+        for point_ref in self.point_set_collection.get_set_list():
+            point_ref.set_coord([point_ref.get_x() * fact_vector[0],
+                                 point_ref.get_y() * fact_vector[1],
+                                 point_ref.get_z() * fact_vector[2]])
 
     def translate(self, move_point=None):
         if move_point is None:
-            self.update_center()
-            move_point_vector = self.get_center().get_coord()
-
-            move_point_vector[0] = -1 * move_point_vector[0]
-            move_point_vector[1] = -1 * move_point_vector[1]
-            move_point_vector[2] = -1 * move_point_vector[2]
-
+            move_point = self.get_center()
+            move_point.conjugate()
         else:
-            move_point_vector = move_point.get_coord()
+            pass
 
-        for point_ref in list(self.point_set):
-            carry_coord = point_ref.get_coord()
-            point_ref.update(carry_coord[0]+move_point_vector[0], carry_coord[1]+move_point_vector[1],
-                             carry_coord[2]+move_point_vector[2])
-
-
-################################################################
+        for point_ref in self.point_set_collection.get_set_list():
+            point_ref.set_coord([point_ref.get_x() + move_point.get_x(),
+                                 point_ref.get_y() + move_point.get_y(),
+                                 point_ref.get_z() + move_point.get_z()])
 
     def show_points(self):
         for point_ref in list(self.point_set):
-            print("\tPoint:\t",point_ref.get_point_name()," at (", point_ref.comp_x(), " ,",
+            print("\tPoint:\t", point_ref.get_point_name(), " at (", point_ref.comp_x(), " ,",
                   point_ref.comp_y(), " ,", point_ref.comp_z(), ")")
 
-
     def show_edges(self):
-        sorted(self.edge_collection)
-        for edge_name, edge_ref in self.edge_collection.items():
+        sorted(self.edge_set_collection)
+        for edge_name, edge_ref in self.edge_set_collection.items():
             print("\tEdge:\t", edge_ref.get_edge_name(), " between ", edge_ref.get_point_a().get_point_name(),
                   " and ", edge_ref.get_point_b().get_point_name() + " , Color: ", edge_ref.color.get_rgb())
 
-#################################################################
-
     def get_edge_collection(self):
-        return self.edge_collection
+        return self.edge_set_collection

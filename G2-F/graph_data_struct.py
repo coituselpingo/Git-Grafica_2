@@ -11,7 +11,7 @@ from OpenGL import GLUT
 import quaternion as QUAT
 
 
-def to_seg(value,precs = 4):
+def to_seg(value, precs = 4):
     seg_value = (360/(2*math.pi))*value
     hour = int(seg_value)
     min_value = (seg_value - hour)*60

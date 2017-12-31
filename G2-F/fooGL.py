@@ -225,9 +225,11 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setSpacing(6)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.openGLWidget = QtWidgets.QOpenGLWidget(self.layoutWidget)
+
+        self.openGLWidget = GLWidget(self.layoutWidget)
         self.openGLWidget.setEnabled(True)
         self.openGLWidget.setObjectName("openGLWidget")
+
         self.gridLayout_2.addWidget(self.openGLWidget, 0, 1, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem1, 0, 0, 1, 1)
