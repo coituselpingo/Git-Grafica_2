@@ -1,15 +1,5 @@
-import graph_data_struct as gs
-import quaternion as quat
-import numpy as np
+from prototype import graph_data_struct as gs
 
-import math
-import sys
-import copy
-import os
-
-from OpenGL import GL
-from OpenGL import GLU
-from OpenGL import GLUT
 
 def grid_gen(ref_value=200, xz_color = None):
     if xz_color is None:

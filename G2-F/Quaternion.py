@@ -1,11 +1,13 @@
 import math
 import numpy
 
-def frange(start, stop, step, DECprec=4):
-	i = start
-	while i < stop:
-		yield round(i,DECprec)
-		i += step
+
+def float_range(start, stop, step, DECprec=4):
+    i = start
+    while i < stop:
+        yield round(i,DECprec)
+        i += step
+
 
 def to_seg(value, precs=3):
     seg_value = (360 / (2 * math.pi)) * value
@@ -50,8 +52,6 @@ class Quaternion:
         self.coef_j = c
         self.coef_k = d
 
-    ########################################################################
-
     def get_coef_n(self):
         return self.coef_n
 
@@ -72,8 +72,6 @@ class Quaternion:
 
     def get_values(self):
         return [self.coef_n, self.coef_i, self.coef_j, self.coef_k]
-
-    ########################################################################
 
     def be_rotational(self, theta = 90, rad_on=False, precs=3):
         if rad_on:
@@ -110,8 +108,6 @@ class Quaternion:
 
     def conjugate(self):
         return Quaternion(self.coef_n, self.coef_i * -1, self.coef_j * -1, self.coef_k * -1)
-
-    ########################################################################
 
     def to_string(self):
         output = str(self.coef_n)

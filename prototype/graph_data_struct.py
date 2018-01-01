@@ -1,14 +1,12 @@
-import math
-import sys
 import copy
-import numpy as np
+import math
 import os
 
+import numpy as np
 from OpenGL import GL
 from OpenGL import GLU
-from OpenGL import GLUT
 
-import quaternion as QUAT
+from prototype import quaternion as QUAT
 
 
 def to_seg(value,precs = 4):
@@ -31,7 +29,7 @@ def plot_list(list_of_objects):
         print("LISTA DE OBJETOS DIBUJADOS\n\n")
         index = 0
         for graph_object in list_of_objects:
-            print(graph_object.get_name(), " \t Indice[", index, "]\n")
+            print(graph_object.get_color_name(), " \t Indice[", index, "]\n")
             index += 1
         print("\n\n[-1] Omitir\t")
         index = input("""
@@ -75,7 +73,7 @@ def control(list_of_objects, glu_context=GLU):
     exist = False
     for graph_object in list_of_objects:
         if graph_object.is_visible():
-            print(graph_object.get_name(), " \t Indice[", index, "]\n")
+            print(graph_object.get_color_name(), " \t Indice[", index, "]\n")
             exist = True
         else:
             pass

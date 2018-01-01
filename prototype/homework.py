@@ -1,19 +1,9 @@
 #! /usr/bin/python3.5
 
-import graph_data_struct as gs
-import grid as gr
-import quaternion as quat
-import numpy as np
-
-import math
-import sys
 import copy
 import os
 
-from OpenGL import GL
-from OpenGL import GLU
-from OpenGL import GLUT
-
+import graph_data_struct as gs
 
 """
 p1 = Point(5,5,5)
@@ -77,7 +67,7 @@ def control(list_of_objects):
     print("LISTA DE OBJETOS DIBUJADOS\n\n")
     index = 0
     for graph_object in list_of_objects:
-        print(graph_object.get_name(), " \t Indice[", index, "]\n")
+        print(graph_object.get_color_name(), " \t Indice[", index, "]\n")
         index += 1
 
     index = input("Opcion >>>:\t")

@@ -1,19 +1,13 @@
+import sys
+
+import graph_data_struct as gs
+import grid as gr
+import l_system as ls
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL import GLUT
 
-import graph_data_struct as gs
-import LPlotter as lp
-import grammar_interpreter as gm
-import grid as gr
-import math
-import copy as copy
-from homework import control as control_menu
-
-import l_system as ls
-
-import quaternion as quat
-import sys
+from prototype import grammar_interpreter as gm
 
 myGrammar = gm.Grammar("++++F")
 myGrammar.set_rule("F:F[+F]F[-F]F")

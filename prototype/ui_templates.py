@@ -1,15 +1,14 @@
-import sys
 import math
+import sys
 
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL import GLUT
-
 from PyQt5.QtCore import pyqtSignal, QPoint, QSize, Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import *
 
-import graph_data_struct as GD
+from prototype import graph_data_struct as GD
 
 
 class Window(QMainWindow):

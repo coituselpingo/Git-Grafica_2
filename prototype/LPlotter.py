@@ -1,16 +1,9 @@
-import re
-from OpenGL import GL
-from OpenGL import GLU
-from OpenGL import GLUT
+import copy as copy
+import math
 
 import graph_data_struct as gs
-import grid as gr
-import math
-import copy as copy
-from homework import control as control_menu
 
-import quaternion as quat
-import sys
+from prototype import quaternion as quat
 
 
 def angle_beteween_vector(vect1, vect2):

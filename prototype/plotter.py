@@ -1,20 +1,14 @@
 #! /usr/bin/python3.5
 
+import sys
+
 import graph_data_struct as gs
 import grid as gr
-import cuadrics as cu
-import quaternion as quat
-import numpy as np
-
-import math
-import sys
-import copy
-import os
-
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL import GLUT
 
+from prototype import cuadrics as cu
 
 
 def main():

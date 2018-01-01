@@ -1,14 +1,12 @@
-import math
-import sys
 import copy
-import numpy as np
+import math
 import os
 
+import numpy as np
 from OpenGL import GL
 from OpenGL import GLU
-from OpenGL import GLUT
 
-import quaternion as QUAT
+from prototype import quaternion as QUAT
 
 
 def to_seg(value, precision=4):
@@ -33,7 +31,7 @@ def plot_list(list_of_objects):
         print("LISTA DE OBJETOS DIBUJADOS\n\n")
         index = 0
         for graph_object in list_of_objects:
-            print(graph_object.get_name(), " \t Indice[", index, "]\n")
+            print(graph_object.get_color_name(), " \t Indice[", index, "]\n")
             index += 1
         print("\n\n[-1] Omitir\t")
         index = input("""
@@ -76,7 +74,7 @@ def control(list_of_objects, glu_context=GLU):
     exist = False
     for graph_object in list_of_objects:
         if graph_object.is_visible():
-            print(graph_object.get_name(), " \t Indice[", index, "]\n")
+            print(graph_object.get_color_name(), " \t Indice[", index, "]\n")
             exist = True
         else:
             pass
@@ -243,15 +241,15 @@ class Color:
     def get_b(self):
         return self.b
 
-    def set_name(self, name):
-        self.color_name = name
-
     def set_color(self, color):
         self.r = color[0]
         self.g = color[1]
         self.b = color[2]
 
-    def get_name(self):
+    def set_color_name(self, name):
+        self.color_name = name
+
+    def get_color_name(self):
         return self.color_name
 
     def set_entity_color(self):
@@ -468,6 +466,34 @@ class Color:
                 "\tB\t", self.b)
 
 
+class ColorSet:
+    def __init__(self):
+        self.internal_set = set([])
+
+    def push(self, ref_color):
+        try:
+            ref_color.get_color_name()
+
+            if ref_color in self.internal_set:
+                carry = list(self.internal_set)
+                return carry[carry.index(ref_color)]
+            else:
+                self.internal_set.add(ref_color)
+                return ref_color
+        except:
+            return None
+
+    def get_set(self):
+        return self.internal_set
+
+    def get_set_list(self):
+        return list(self.internal_set)
+
+    def __str__(self):
+        for i in self.get_set_list():
+            print(i)
+
+
 class Point:
     x_component = 0
     y_component = 0
@@ -590,7 +616,7 @@ class Point:
               "\tZ\t", self.z_component)
 
 
-class SetPoint:
+class PointSet:
     def __init__(self):
         self.internal_set = set([])
 
@@ -626,7 +652,7 @@ class Edge:
 
     edge_name = ""
 
-    def __init__(self, p_a=None, p_b=None, color=None):
+    def __init__(self, p_a=None, p_b=None, color=None, name=None):
         if p_a is None:
             p_a = Point(0, 0, 0)
         else:
@@ -645,7 +671,7 @@ class Edge:
 
         self.color = color
 
-        self.edge_name = None
+        self.edge_name = name
 
         self.edge_norm = 0
 
@@ -719,7 +745,7 @@ class Edge:
               "\tColor\t", self.color)
 
 
-class SetEdge:
+class EdgeSet:
     def __init__(self):
         self.internal_set = set([])
 
@@ -748,8 +774,9 @@ class SetEdge:
 
 
 class GraphicalObject:
-    point_set_collection = SetPoint()
-    edge_set_collection = SetEdge()
+    point_set_collection = PointSet()
+    edge_set_collection = EdgeSet()
+    color_set_collection = ColorSet()
 
     center = None
 
@@ -762,9 +789,9 @@ class GraphicalObject:
     def __init__(self):
         self.center = Point()
 
-        self.point_set_collection = SetPoint()
-        self.edge_set_collection = SetEdge()
-
+        self.point_set_collection = PointSet()
+        self.edge_set_collection = EdgeSet()
+        self.color_set_collection = ColorSet()
         self.precision = 3
 
         self.graphical_object_name = None
@@ -816,9 +843,10 @@ class GraphicalObject:
         return self.center
 
     def push_edge(self, point_1, point_2, color=None, name=None, verbose=False):
-        ref_edge = Edge(point_1, point_2, color)
-        ref_edge.set_edge_name(name)
-        self.edge_set_collection[name] = ref_edge
+        self.edge_set_collection.push(Edge(self.point_set_collection.push(point_1),
+                                           self.point_set_collection.push(point_2),
+                                           self.color_set_collection.push(color),
+                                           name))
 
     def init(self):
         pass
@@ -888,3 +916,24 @@ class GraphicalObject:
 
     def get_edge_collection(self):
         return self.edge_set_collection
+
+    def on_self_rotate_x(self, step, sign):
+        ref_center = copy.copy(self.get_center())
+        self.translate()
+        self.rotate(step, "x", True, sign)
+        self.translate(ref_center)
+
+    def on_self_rotate_y(self, step, sign):
+        ref_center = copy.copy(self.get_center())
+        self.translate()
+        self.rotate(step, "y", True, sign)
+        self.translate(ref_center)
+
+    def on_self_rotate_z(self, step, sign):
+        ref_center = copy.copy(self.get_center())
+        self.translate()
+        self.rotate(step, "z", True, sign)
+        self.translate(ref_center)
+
+    def __str__(self):
+        return self.graphical_object_name

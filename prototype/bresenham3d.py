@@ -1,17 +1,6 @@
 #! /usr/bin/python3.5
 
-import graph_data_struct as gs
-import quaternion as quat
-import grid as gr
-
 import math
-import sys
-import copy
-import os
-
-from OpenGL import GL
-from OpenGL import GLU
-from OpenGL import GLUT
 
 """
 def bresenham(x0, y0, x1, y1):

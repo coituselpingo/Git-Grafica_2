@@ -1,15 +1,13 @@
-import bresenham3d as br
-import quaternion as qd
-import graph_data_struct as gs
-import grid as gr
-import quaternion as QUAT
+import sys
+
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 import OpenGL.GLUT as GLUT
+import bresenham3d as br
+import graph_data_struct as gs
+import grid as gr
 
-import sys
-import copy
-import numpy as np
+from prototype import quaternion as qd, quaternion as QUAT
 
 
 def set_color(data_color):
@@ -443,10 +441,10 @@ class RubikCube:
 
         for ref in f_cubes:
             m = ref[0]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_color_name())
 
             m = ref[1]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_color_name())
 
             print("****")
 
@@ -477,10 +475,10 @@ class RubikCube:
 
         for ref in f_cubes:
             m = ref[0]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_color_name())
 
             m = ref[1]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_color_name())
 
             print("****")
 
@@ -511,10 +509,10 @@ class RubikCube:
 
         for ref in f_cubes:
             m = ref[0]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_color_name())
 
             m = ref[1]
-            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_name())
+            print(m[0].get_coord(), m[1].get_coord(), m[2].get_coord(), m[3].get_coord(), m[4].get_color_name())
 
             print("****")
 

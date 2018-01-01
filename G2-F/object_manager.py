@@ -1,4 +1,5 @@
-import graph_data_struct as GS
+from prototype import graph_data_struct as GS
+
 
 class EntityManger:
     def __init__(self):

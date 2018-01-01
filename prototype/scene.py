@@ -1,15 +1,9 @@
 #! /usr/bin/python3.5
 
-import graph_data_struct as gs
-import quaternion as quat
-
-import math
 import sys
-import copy
-import os
 
+import graph_data_struct as gs
 from OpenGL import GL
-from OpenGL import GLU
 from OpenGL import GLUT
 
 scale_option = "rgb"

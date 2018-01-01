@@ -1,17 +1,5 @@
-from OpenGL import GL
-from OpenGL import GLU
-from OpenGL import GLUT
-
-import graph_data_struct as gs
 import LPlotter as lp
-import grammar_interpreter as gm
-import grid as gr
-import math
-import copy as copy
-from homework import control as control_menu
-
-import quaternion as quat
-import sys
+import graph_data_struct as gs
 
 
 class LSystem:

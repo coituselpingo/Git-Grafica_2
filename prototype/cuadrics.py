@@ -1,16 +1,9 @@
-import graph_data_struct as gs
-import grid as gr
-import quaternion as quat
-import numpy as np
-
 import math
-import sys
-import copy
-import os
 
-from OpenGL import GL
-from OpenGL import GLU
-from OpenGL import GLUT
+import graph_data_struct as gs
+
+from prototype import quaternion as quat
+
 
 def ellipsoid(a, b, c, step = 0.5, object_color = None):
     if object_color is None:
