@@ -6,7 +6,8 @@ import numpy as np
 from OpenGL import GL
 from OpenGL import GLU
 
-from prototype import quaternion as QUAT
+import libg2f.Morphing as MO
+import libg2f.Quaternion as QUAT
 
 
 def to_seg(value, precision=4):
@@ -252,8 +253,8 @@ class Color:
     def get_color_name(self):
         return self.color_name
 
-    def set_entity_color(self):
-        GL.glColor3f(self.r, self.g, self.b)
+    def set_entity_color(self, gl_context=GL):
+        gl_context.glColor3f(self.r, self.g, self.b)
 
     def color_mode(self, color_mode=None):
         if color_mode is None:
@@ -490,7 +491,7 @@ class ColorSet:
 
     def __str__(self):
         carry = ""
-        for i in self.get_set_list():
+        for i in self:
             carry += i
 
         return carry
@@ -502,12 +503,14 @@ class Point:
     z_component = 0
 
     point_name = ""
+    queried_state = False
 
     def __init__(self, x=0, y=0, z=0):
         self.x_component = x
         self.y_component = y
         self.z_component = z
 
+        self.queried_state = False
         self.point_name = None
 
     def get_x(self):
@@ -518,6 +521,12 @@ class Point:
 
     def get_z(self):
         return self.z_component
+
+    def get_queried_state(self):
+        return self.queried_state
+
+    def set_queried_state(self, flag):
+        self.queried_state = flag
 
     def get_coord(self):
         return [self.x_component, self.y_component, self.z_component]
@@ -553,11 +562,14 @@ class Point:
         else:
             self.point_name = name
 
-    def get_point_name(self):
+    def get_point_name(self, mode=0):
         if self.point_name is None:
             return False
         else:
-            return self.point_name
+            if mode == 0:
+                return int(self.point_name)
+            else:
+                return self.point_name
 
     def norm(self, ref_point=None):
         if ref_point is None:
@@ -602,6 +614,30 @@ class Point:
 
         return math.acos(self.distance_z(reference_point) / self.norm(reference_point))
 
+    def step_to_point(self, reference_point, step):
+        self.step_x = self.x_component
+        self.step_y = self.y_component
+        self.step_z = self.z_component
+
+        self.x_component = self.x_component + step * self.distance_x(reference_point)
+        self.y_component = self.y_component + step * self.distance_y(reference_point)
+        self.z_component = self.z_component + step * self.distance_z(reference_point)
+
+    def step_return(self):
+        self.x_component = self.step_x
+        self.y_component = self.step_y
+        self.z_component = self.step_z
+
+    def set_entity_vertex(self, gl_context=GL):
+        gl_context.glVertex3f(self.x_component, self.y_component, self.z_component)
+
+    def get_relative_normal(self, point0, pointf):
+        carry_coords = np.cross(self.get_unitary(point0), pointf.get_unitary(pointf))
+        carry_point = Point()
+        carry_point.set_coord(carry_coords)
+        return carry_point.get_unitary()
+
+
     def __hash__(self):
         return hash(str(self.x_component) + str(self.y_component) + str(self.z_component) + str(self.point_name))
 
@@ -638,7 +674,7 @@ class PointSet:
 
     def __str__(self):
         carry = ""
-        for i in self.get_set_list():
+        for i in self:
             carry += i
         return carry
 
@@ -763,16 +799,16 @@ class EdgeSet:
 
     def __str__(self):
         carry = ""
-        for i in self.get_set_list():
+        for i in self:
             carry += i
 
         return carry
 
 
 class GraphicalObject:
-    point_set_collection = PointSet()
-    edge_set_collection = EdgeSet()
-    color_set_collection = ColorSet()
+    point_set_collection = []
+    edge_set_collection = []
+    faces_set_collection = []
 
     center = None
 
@@ -785,13 +821,14 @@ class GraphicalObject:
     def __init__(self):
         self.center = Point()
 
-        self.point_set_collection = PointSet()
-        self.edge_set_collection = EdgeSet()
-        self.color_set_collection = ColorSet()
+        self.point_set_collection = []
+        self.edge_set_collection = []
         self.precision = 3
 
         self.graphical_object_name = ""
         self.visible = False
+
+        self.faces_set_collection = []
 
     def set_precision(self, precision):
         self.precision = precision
@@ -815,7 +852,7 @@ class GraphicalObject:
         return self.visible
 
     def __update_center(self):
-        auxiliary_list = self.point_set_collection.get_set_list()
+        auxiliary_list = self.point_set_collection
 
         num_of_points = len(auxiliary_list)
 
@@ -838,10 +875,15 @@ class GraphicalObject:
         self.__update_center()
         return self.center
 
-    def push_edge(self, point_1, point_2, color=None, name=None, verbose=False):
-        self.edge_set_collection.push(Edge(self.point_set_collection.push(point_1),
-                                           self.point_set_collection.push(point_2),
-                                           self.color_set_collection.push(color),
+    def push_point(self, coords, index):
+        carry = Point(coords[0], coords[1], coords[2])
+        carry.set_point_name(str(index))
+        self.point_set_collection.append(carry)
+
+    def push_edge(self, ref_point_1, ref_point_2, color=None, name=None, verbose=False):
+        self.edge_set_collection.append(Edge(self.point_set_collection[ref_point_1],
+                                           self.point_set_collection[ref_point_2],
+                                           color,
                                            name))
         if verbose:
             print("\nEdge\n\tPuntos")
@@ -857,8 +899,14 @@ class GraphicalObject:
         else:
             return None
 
+        if len(self.faces_set_collection) is not 0:
+            self.plot_faces(None, gl_context)
+        else:
+            pass
+
         gl_context.glBegin(GL.GL_LINES)
-        for edge_ref in self.edge_set_collection.get_set_list():
+
+        for edge_ref in self.edge_set_collection:
             color = edge_ref.get_color()
 
             gl_context.glColor3f(color.get_r(), color.get_g(), color.get_b())
@@ -876,7 +924,7 @@ class GraphicalObject:
         else:
             pass
 
-        for point_ref in self.point_set_collection.get_set_list():
+        for point_ref in self.point_set_collection:
             carry_coord = QUAT.rotate(point_ref.get_coord(), vector, angle, sign, its_unitary, verbose)
             point_ref.set_coord(carry_coord)
 
@@ -886,7 +934,7 @@ class GraphicalObject:
         else:
             fact_vector = [gen_fact, gen_fact, gen_fact]
 
-        for point_ref in self.point_set_collection.get_set_list():
+        for point_ref in self.point_set_collection:
             point_ref.set_coord([point_ref.get_x() * fact_vector[0],
                                  point_ref.get_y() * fact_vector[1],
                                  point_ref.get_z() * fact_vector[2]])
@@ -898,25 +946,25 @@ class GraphicalObject:
         else:
             pass
 
-        for point_ref in self.point_set_collection.get_set_list():
+        for point_ref in self.point_set_collection:
             point_ref.set_coord([point_ref.get_x() + move_point.get_x(),
                                  point_ref.get_y() + move_point.get_y(),
                                  point_ref.get_z() + move_point.get_z()])
 
     def show_points(self,mode=0):
         if mode==0:
-            print("Number of Points\t", len(self.point_set_collection.get_set_list()))
+            print("Number of Points\t", len(self.point_set_collection))
         else:
-            print("Number of Points\t", len(self.point_set_collection.get_set_list()))
-            for point_ref in self.point_set_collection.get_set_list():
+            print("Number of Points\t", len(self.point_set_collection))
+            for point_ref in self.point_set_collection:
                 print(point_ref)
 
     def show_edges(self, mode=0):
         if mode==0:
-            print("Number of Edges\t", len(self.edge_set_collection.get_set_list()))
+            print("Number of Edges\t", len(self.edge_set_collection))
         else:
-            print("Number of Edges\t", len(self.edge_set_collection.get_set_list()))
-            for edge_ref in self.edge_set_collection.get_set_list():
+            print("Number of Edges\t", len(self.edge_set_collection))
+            for edge_ref in self.edge_set_collection:
                 print(edge_ref)
 
     def get_edge_collection(self):
@@ -939,6 +987,62 @@ class GraphicalObject:
         self.translate()
         self.rotate(step, "z", True, sign)
         self.translate(ref_center)
+
+    def get_point_by_index(self, index):
+        return self.point_set_collection[index]
+
+    def relate_objects(self, objective_object):
+        self.relational_index_list = MO.Relate_Objects(self, objective_object)
+
+    def morph(self, objective_object, step, precs=2, start=False):
+        if start:
+            self.relate_objects(objective_object)
+            self.indicator_step = 0
+            return None
+        else:
+            if self.indicator_step == 1:
+                self.indicator_step = 0
+            else:
+                self.indicator_step = round(self.indicator_step + step, precs)
+
+        print(self.indicator_step)
+        for morph_pair in self.relational_index_list:
+            self.point_set_collection[morph_pair[0]].step_to_point(objective_object.get_point_by_index(morph_pair[1]),
+                                                                   self.indicator_step)
+
+        self.plot()
+
+        for point_ref in self.point_set_collection:
+            point_ref.step_return()
+
+    def push_face(self, index_list):
+        self.faces_set_collection.append(index_list)
+
+    def plot_faces(self, color=None, gl_context=GL):
+        if color is None:
+            color = Color(248/255, 150/225, 92/225)
+        else:
+            pass
+        for face in self.faces_set_collection:
+
+            #gl_context.glEnable(gl_context.GL_COLOR_MATERIAL)
+
+            #gl_context.glColorMaterial(gl_context.GL_FRONT_AND_BACK, gl_context.GL_AMBIENT_AND_DIFFUSE)
+
+            #gl_context.glMaterial(gl_context.GL_FRONT_AND_BACK, gl_context.GL_AMBIENT_AND_DIFFUSE, 0.7)
+
+            gl_context.glPolygonMode(gl_context.GL_FRONT_AND_BACK, gl_context.GL_FILL)
+
+            gl_context.glBegin(gl_context.GL_POLYGON)
+            color.set_entity_color(gl_context)
+
+            for vertex in face:
+
+                self.get_point_by_index(vertex).set_entity_vertex(gl_context)
+
+            gl_context.glEnd()
+
+            #gl_context.glDisable(gl_context.GL_COLOR_MATERIAL)
 
     def __str__(self):
         return self.graphical_object_name

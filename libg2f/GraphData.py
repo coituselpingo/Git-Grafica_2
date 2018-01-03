@@ -617,6 +617,7 @@ class Point:
 class PointSet:
     def __init__(self):
         self.internal_set = set([])
+        #self.internal_set = []
 
     def push(self, ref_point):
         if ref_point in self.internal_set:
@@ -738,6 +739,7 @@ class Edge:
 class EdgeSet:
     def __init__(self):
         self.internal_set = set([])
+        #self.internal_set = []
 
     def push(self, ref_edge):
         if ref_edge in self.internal_set:
@@ -746,7 +748,6 @@ class EdgeSet:
         else:
             self.internal_set.add(ref_edge)
             return ref_edge
-
     def get_set(self):
         return self.internal_set
 
@@ -836,8 +837,9 @@ class GraphicalObject:
                                            self.color_set_collection.push(color),
                                            name))
         if verbose:
-            print(self.point_set_collection.push(point_1))
-            print(self.point_set_collection.push(point_2))
+            print("\nEdge\n\tPuntos")
+            print("\t", self.point_set_collection.push(point_1))
+            print("\t", self.point_set_collection.push(point_2))
 
     def init(self):
         pass
@@ -869,7 +871,7 @@ class GraphicalObject:
 
         for point_ref in self.point_set_collection.get_set_list():
             carry_coord = QUAT.rotate(point_ref.get_coord(), vector, angle, sign, its_unitary, verbose)
-            point_ref.update(carry_coord[0], carry_coord[1], carry_coord[2])
+            point_ref.set_coord(carry_coord)
 
     def scale(self, gen_fact=1, fact_vector=[1, 1, 1]):
         if gen_fact is None:
@@ -894,15 +896,21 @@ class GraphicalObject:
                                  point_ref.get_y() + move_point.get_y(),
                                  point_ref.get_z() + move_point.get_z()])
 
-    def show_points(self):
-        print("Number of Points\t", len(self.point_set_collection.get_set_list()))
-        for point_ref in self.point_set_collection.get_set_list():
-            print(point_ref)
+    def show_points(self,mode=0):
+        if mode==0:
+            print("Number of Points\t", len(self.point_set_collection.get_set_list()))
+        else:
+            print("Number of Points\t", len(self.point_set_collection.get_set_list()))
+            for point_ref in self.point_set_collection.get_set_list():
+                print(point_ref)
 
-    def show_edges(self):
-        print("Number of Edges\t", len(self.edge_set_collection.get_set_list()))
-        for edge_ref in self.edge_set_collection.get_set_list():
-            print(edge_ref)
+    def show_edges(self, mode=0):
+        if mode==0:
+            print("Number of Edges\t", len(self.edge_set_collection.get_set_list()))
+        else:
+            print("Number of Edges\t", len(self.edge_set_collection.get_set_list()))
+            for edge_ref in self.edge_set_collection.get_set_list():
+                print(edge_ref)
 
     def get_edge_collection(self):
         return self.edge_set_collection

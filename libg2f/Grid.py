@@ -1,4 +1,4 @@
-import GraphData as GD
+import libg2f.GraphData as GD
 
 def grid_gen(ref_value=200, xz_color=None, y_color=None):
     if xz_color is None:

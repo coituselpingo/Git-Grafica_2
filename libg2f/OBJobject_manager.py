@@ -1,4 +1,4 @@
-from libg2f import GraphData as GD
+from libg2f import OBJGraphData as GD
 
 
 def generate_dupla(input_list):
@@ -70,6 +70,7 @@ def read_obj(path, verbose=False):
 
         point_list = []
         edge_list = []
+        index = 0
         for line in read_buffer:
             if line[0:2] == "v ":
                 if verbose:
@@ -77,24 +78,25 @@ def read_obj(path, verbose=False):
                     print([float(i) for i in line[2:].split(" ")])
                 else:
                     pass
-                point_list.append([float(i) for i in line[2:].split(" ")])
+                carry_obj.push_point([float(i) for i in line[2:].split(" ")], index)
+
+                index = index + 1
+
             if line[0:2] == "f ":
                 edge_points = []
                 for i in line[2:].split(" "):
                     edge_points.append([int(j) - 1 for j in i.split("/")][0])
 
-                edge_list = edge_list + generate_dupla(edge_points)
+                carry_obj.push_face(edge_points)
+
+                for edge in generate_dupla(edge_points):
+                    carry_obj.push_edge(edge[0], edge[1])
 
                 if verbose:
                     print("Edge-OBJ")
                     print(edge_points)
                 else:
                     pass
-
-        for edge in edge_list:
-            carry_obj.push_edge(GD.Point(point_list[edge[0]][0], point_list[edge[0]][1], point_list[edge[0]][2]),
-                                GD.Point(point_list[edge[1]][0], point_list[edge[1]][1], point_list[edge[1]][2]),
-                                None, None, verbose)
         print("SUCCESS-COMMIT OBJECT")
 
         return carry_obj
