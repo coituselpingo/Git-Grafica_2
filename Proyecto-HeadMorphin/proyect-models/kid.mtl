@@ -1,0 +1,13 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl Texture2
+Ns 19.607843
+Ka 0.000000 0.000000 0.000000
+Kd 0.700000 0.700000 0.700000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /media/coituselpingo/University/Git-Proyects/Git-Grafica_2/Proyecto-HeadMorphin/Models/Samuel Free-fbx/JustinBieber/GoodBieber_skin_hi.jpg

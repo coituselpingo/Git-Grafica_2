@@ -1,0 +1,151 @@
+>>>>>>>>>>>>homework.py
+def main():
+    GLUT.glutInit(sys.argv)
+    GLUT.glutInitDisplayMode(GLUT.GLUT_SINGLE | GLUT.GLUT_RGBA | GLUT.GLUT_DEPTH)
+    GLUT.glutInitWindowSize(400, 400)
+    GLUT.glutInitWindowPosition(200, 200)
+
+    GLUT.glutCreateWindow("Grafica 2")
+
+    GL.glDepthFunc(GL.GL_LEQUAL)
+    GL.glEnable(GL.GL_DEPTH_TEST)
+    GL.glClearDepth(1.0)
+    GL.glClearColor(0.650, 0.780, 0.8, 0)
+    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glLoadIdentity()
+    #GL.glOrtho(-20, 20, -20, 20, -20, 20)
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+
+    GLU.gluPerspective(100, 1.0, 1.0, 100.0)
+    GL.glTranslatef(0.0, 0.0, 0.0)
+    GLU.gluLookAt(10, 10, 10, 0, 0, 0, 0, 1, 0)
+
+    grid = gr.grid_gen(100)
+
+    list_of_objects = []
+    list_of_objects.append(tetaedro)
+    list_of_objects.append(triangle)
+
+    while True:
+
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+
+        grid.show()
+        grid.plot()
+
+
+        ########################################
+
+        for ref_object in list_of_objects:
+            ref_object.plot()
+
+        ########################################
+
+        GL.glFlush()
+        GLUT.glutPostRedisplay()
+
+        control(list_of_objects)
+
+    GLUT.glutMainLoop()
+
+main()
+
+>>>>>>>>>LPloter.py
+
+print(turtle_plotter("FFFF[+FF[+]FF[-]+]FFFF[-FF[+]FF[-]+]+FF[+]FF[-]+", [0, 0, 0], 90, 45, 5))
+
+print(turtle_sentence("FFFF[+FF[+X]FF[-X]+X]FFFF[-FF[+X]FF[-X]+X]+FF[+X]FF[-X]+X"))
+
+test_tree = l_systemGraphObject("FFFF[+FF[+]FF[-]+]FFFF[-FF[+]FF[-]+]+FF[+]FF[-]+", [0, 0, 0], 90, 45, 5)
+test_tree.show()
+list_of_objects = [test_tree]
+
+
+def main():
+    GLUT.glutInit(sys.argv)
+    GLUT.glutInitDisplayMode(GLUT.GLUT_SINGLE | GLUT.GLUT_RGBA | GLUT.GLUT_DEPTH)
+    GLUT.glutInitWindowSize(400, 400)
+    GLUT.glutInitWindowPosition(200, 200)
+
+    GLUT.glutCreateWindow("Grafica 2")
+
+    GL.glDepthFunc(GL.GL_LEQUAL)
+    GL.glEnable(GL.GL_DEPTH_TEST)
+    GL.glClearDepth(1.0)
+    GL.glClearColor(0.650, 0.780, 0.8, 0)
+    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    GL.glMatrixMode(GL.GL_PROJECTION)
+    GL.glLoadIdentity()
+    GL.glMatrixMode(GL.GL_MODELVIEW)
+
+    GLU.gluPerspective(100, 1.0, 1.0, 100.0)
+    GL.glTranslatef(0.0, 0.0, 0.0)
+    GLU.gluLookAt(10, 10, 10, 0, 0, 0, 0, 1, 0)
+
+    grid = gr.grid_gen(100,gs.Color(0.5, 1, 1))
+
+    while True:
+
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+
+        grid.show()
+        grid.plot()
+
+        ########################################
+
+        for ref_object in list_of_objects:
+            ref_object.plot()
+
+        ########################################
+
+        GL.glFlush()
+        GLUT.glutPostRedisplay()
+
+        control_menu(list_of_objects)
+
+    GLUT.glutMainLoop()
+
+main()
+
+
+>>>>>>>>>>>>>>>>>>>>grammar_interpreter
+
+x = Grammar("F")
+x.set_rule("F:F+F--F+F")
+x.setType(0)
+x.derivate("F")
+
+x = Grammar("X")
+x.set_rule("X:F[+X]F[-X]+X")
+x.set_rule("F:FF")
+x.setType(0)
+x.derivate("X")
+
+carry = "X"
+for i in range(0, 7):
+    carry = x.derivate(carry)
+    print(carry, "\n\n")
+
+>>>>>>>>>>>>>>>>>>>>GraphicalObject
+
+
+    def push_point(self, ref_point=Point(0, 0, 0), name=None, verbose=False):
+        if name is None:
+            if not ref_point.get_point_name():
+                name = self.last_point_name()
+                ref_point.set_point_name(name)
+            else:
+                pass
+        else:
+            ref_point.set_point_name(name)
+
+        self.point_set_collection[ref_point.get_point_name()] = ref_point
+        self.point_set.add(ref_point)
+
+        if verbose:
+            print("\nPoint:\t(", ref_point.comp_x(), ",", ref_point.comp_y(), ",", ref_point.comp_z(),
+                  ") Add-ed /=/ Name:\t", ref_point.get_point_name(), "\n")
+
+    def get_point(self, name):
+        return self.point_set_collection[name]
