@@ -14,70 +14,42 @@ import libg2f.OBJGraphData as GD
 import libg2f.Grid as GR
 import libg2f.OBJobject_manager as OBJM
 
-head = OBJM.read_obj("./proyect-models/head.obj")
-spherehead = OBJM.read_obj("./proyect-models/spherehead.obj")
-conehead = OBJM.read_obj("./proyect-models/conehead.obj")
-cylinderhead = OBJM.read_obj("./proyect-models/cylinderhead.obj")
+young = OBJM.read_obj("./proyect-models/young.obj")
+kid = OBJM.read_obj("./proyect-models/kid.obj")
+youngold = OBJM.read_obj("./proyect-models/youngold.obj")
 
-head.translate()
-spherehead.translate()
-conehead.translate()
-cylinderhead.translate()
+young.translate()
+kid.translate()
+youngold.translate()
 
-head_list = head.point_set_collection
-spherehead_list = spherehead.point_set_collection
-conehead_list = conehead.point_set_collection
-cylinderhead_list = cylinderhead.point_set_collection
+young_list = young.point_set_collection
+kid_list = kid.point_set_collection
+youngold_list = youngold.point_set_collection
 
-if (len(head_list) == len(conehead_list)
-    and len(head_list) == len(spherehead_list)
-    and len(head_list) == len(cylinderhead_list)):
+if len(young_list) == len(kid_list) and len(young_list) == len(youngold_list):
     print("this shit works")
 else:
     print("this shit isnt working")
     exit()
 
-head.scale(10)
-head.on_self_rotate_z(180, "+")
-head.on_self_rotate_y(180, "+")
-head.translate()
-head.translate(GD.Point(0, 0, 5))
+scale_ratio = 3
+translate_point = GD.Point()
+translate_point.set_coord([0, 5, 0])
 
-head.on_self_rotate_y(45, "-")
-head.on_self_rotate_x(45, "-")
-head.on_self_rotate_z(45, "-")
+young.scale(scale_ratio)
+young.translate(translate_point)
 
-spherehead.scale(10)
-spherehead.on_self_rotate_z(180, "+")
-spherehead.on_self_rotate_y(180, "+")
-spherehead.translate()
-spherehead.translate(GD.Point(0, 0, 5))
+kid.scale(scale_ratio)
+kid.translate(translate_point)
 
-spherehead.on_self_rotate_y(45, "-")
-spherehead.on_self_rotate_x(45, "-")
-spherehead.on_self_rotate_z(45, "-")
+youngold.scale(scale_ratio)
+youngold.translate(translate_point)
 
-conehead.scale(10)
-conehead.on_self_rotate_z(180, "+")
-conehead.on_self_rotate_y(180, "+")
-conehead.translate()
-conehead.translate(GD.Point(0, 0, 5))
+young.show()
+kid.show()
+youngold.show()
 
-conehead.on_self_rotate_y(45, "-")
-conehead.on_self_rotate_x(45, "-")
-conehead.on_self_rotate_z(45, "-")
-
-cylinderhead.scale(10)
-cylinderhead.on_self_rotate_z(180, "+")
-cylinderhead.on_self_rotate_y(180, "+")
-cylinderhead.translate()
-cylinderhead.translate(GD.Point(0, 0, 5))
-
-cylinderhead.on_self_rotate_y(45, "-")
-cylinderhead.on_self_rotate_x(45, "-")
-cylinderhead.on_self_rotate_z(45, "-")
-
-head.show()
+print("here ist'r are laggy")
 
 
 def main():
@@ -111,12 +83,12 @@ def main():
 
     GLU.gluPerspective(100, 1.0, 1.0, 100.0)
     GL.glTranslatef(0.0, 0.0, 0.0)
-    GLU.gluLookAt(10, 10, 10, 0, 0, 0, 0, 1, 0)
+    GLU.gluLookAt(0, 10, 10, 0, 0, 0, 0, 1, 0)
 
     grid = GR.grid_gen()
-    grid.show()
+    #grid.show()
 
-    head.morph(spherehead, 0.01, 2, True)
+    kid.morph(youngold, 100, True)
 
     while True:
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
@@ -124,7 +96,7 @@ def main():
 
         ########################################
 
-        head.morph(spherehead, 0.01, 2)
+        kid.morph(youngold, 100)
 
         ########################################
 

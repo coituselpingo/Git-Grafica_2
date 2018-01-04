@@ -510,6 +510,10 @@ class Point:
         self.y_component = y
         self.z_component = z
 
+        self.mem_x = self.x_component
+        self.mem_y = self.y_component
+        self.mem_z = self.z_component
+
         self.queried_state = False
         self.point_name = None
 
@@ -615,18 +619,12 @@ class Point:
         return math.acos(self.distance_z(reference_point) / self.norm(reference_point))
 
     def step_to_point(self, reference_point, step):
-        self.step_x = self.x_component
-        self.step_y = self.y_component
-        self.step_z = self.z_component
-
-        self.x_component = self.x_component + step * self.distance_x(reference_point)
-        self.y_component = self.y_component + step * self.distance_y(reference_point)
-        self.z_component = self.z_component + step * self.distance_z(reference_point)
-
-    def step_return(self):
-        self.x_component = self.step_x
-        self.y_component = self.step_y
-        self.z_component = self.step_z
+        if step == 0:
+            return None
+        else:
+            self.x_component += self.distance_x(reference_point) / step
+            self.y_component += self.distance_y(reference_point) / step
+            self.z_component += self.distance_z(reference_point) / step
 
     def set_entity_vertex(self, gl_context=GL):
         gl_context.glVertex3f(self.x_component, self.y_component, self.z_component)
@@ -637,6 +635,15 @@ class Point:
         carry_point.set_coord(carry_coords)
         return carry_point.get_unitary()
 
+    def coord_mem(self):
+        self.mem_x = self.x_component
+        self.mem_y = self.y_component
+        self.mem_z = self.z_component
+
+    def coord_return(self):
+        self.x_component = self.mem_x
+        self.y_component = self.mem_y
+        self.z_component = self.mem_z
 
     def __hash__(self):
         return hash(str(self.x_component) + str(self.y_component) + str(self.z_component) + str(self.point_name))
@@ -808,7 +815,10 @@ class EdgeSet:
 class GraphicalObject:
     point_set_collection = []
     edge_set_collection = []
+
     faces_set_collection = []
+    display_faces = False
+    relational_index_list = []
 
     center = None
 
@@ -829,6 +839,8 @@ class GraphicalObject:
         self.visible = False
 
         self.faces_set_collection = []
+        self.display_faces = False
+        self.relational_index_list = []
 
     def set_precision(self, precision):
         self.precision = precision
@@ -850,6 +862,15 @@ class GraphicalObject:
 
     def is_visible(self):
         return self.visible
+
+    def show_faces(self):
+        self.display_faces = True
+
+    def hide_faces(self):
+        self.display_faces = False
+
+    def are_faces_visible(self):
+        return self.display_faces
 
     def __update_center(self):
         auxiliary_list = self.point_set_collection
@@ -992,57 +1013,69 @@ class GraphicalObject:
         return self.point_set_collection[index]
 
     def relate_objects(self, objective_object):
-        self.relational_index_list = MO.Relate_Objects(self, objective_object)
+        self.relational_index_list = MO.advance_relate_objects(self, objective_object)
 
-    def morph(self, objective_object, step, precs=2, start=False):
+    def morph(self, objective_object, step_amount, start=False):
         if start:
             self.relate_objects(objective_object)
-            self.indicator_step = 0
+            self.indicator_step = step_amount
+
+            for point_ref in self.point_set_collection:
+                point_ref.coord_mem()
+
             return None
         else:
-            if self.indicator_step == 1:
-                self.indicator_step = 0
+            if self.indicator_step == 0:
+                self.indicator_step = step_amount
+
+                for point_ref in self.point_set_collection:
+                    point_ref.coord_return()
             else:
-                self.indicator_step = round(self.indicator_step + step, precs)
+                self.indicator_step = self.indicator_step -1
 
         print(self.indicator_step)
+
         for morph_pair in self.relational_index_list:
             self.point_set_collection[morph_pair[0]].step_to_point(objective_object.get_point_by_index(morph_pair[1]),
                                                                    self.indicator_step)
 
-        self.plot()
+        """
+        MO.parallel_morph(self, objective_object, self.relational_index_list, self.indicator_step)
+        """
 
-        for point_ref in self.point_set_collection:
-            point_ref.step_return()
+        self.plot()
 
     def push_face(self, index_list):
         self.faces_set_collection.append(index_list)
 
     def plot_faces(self, color=None, gl_context=GL):
-        if color is None:
-            color = Color(248/255, 150/225, 92/225)
+        if self.display_faces:
+            if color is None:
+                color = Color(248/255, 150/225, 92/225)
+            else:
+                pass
+            for face in self.faces_set_collection:
+
+                #gl_context.glEnable(gl_context.GL_COLOR_MATERIAL)
+
+                #gl_context.glColorMaterial(gl_context.GL_FRONT_AND_BACK, gl_context.GL_AMBIENT_AND_DIFFUSE)
+
+                #gl_context.glMaterial(gl_context.GL_FRONT_AND_BACK, gl_context.GL_AMBIENT_AND_DIFFUSE, 0.7)
+
+                gl_context.glPolygonMode(gl_context.GL_FRONT_AND_BACK, gl_context.GL_FILL)
+
+                gl_context.glBegin(gl_context.GL_POLYGON)
+                color.set_entity_color(gl_context)
+
+                for vertex in face:
+
+                    self.get_point_by_index(vertex).set_entity_vertex(gl_context)
+
+                gl_context.glEnd()
+
+                #gl_context.glDisable(gl_context.GL_COLOR_MATERIAL)
         else:
             pass
-        for face in self.faces_set_collection:
-
-            #gl_context.glEnable(gl_context.GL_COLOR_MATERIAL)
-
-            #gl_context.glColorMaterial(gl_context.GL_FRONT_AND_BACK, gl_context.GL_AMBIENT_AND_DIFFUSE)
-
-            #gl_context.glMaterial(gl_context.GL_FRONT_AND_BACK, gl_context.GL_AMBIENT_AND_DIFFUSE, 0.7)
-
-            gl_context.glPolygonMode(gl_context.GL_FRONT_AND_BACK, gl_context.GL_FILL)
-
-            gl_context.glBegin(gl_context.GL_POLYGON)
-            color.set_entity_color(gl_context)
-
-            for vertex in face:
-
-                self.get_point_by_index(vertex).set_entity_vertex(gl_context)
-
-            gl_context.glEnd()
-
-            #gl_context.glDisable(gl_context.GL_COLOR_MATERIAL)
 
     def __str__(self):
         return self.graphical_object_name

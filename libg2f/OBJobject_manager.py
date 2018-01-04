@@ -1,5 +1,5 @@
 from libg2f import OBJGraphData as GD
-
+import math
 
 def generate_dupla(input_list):
     output_carry = []
@@ -7,7 +7,7 @@ def generate_dupla(input_list):
     first = True
     index = 0
     length = len(input_list)
-    while index < length + 2:
+    while index < 2*length:
         ref = input_list[index % length]
         if first:
             pair_carry = [ref]
@@ -20,16 +20,20 @@ def generate_dupla(input_list):
             pair_carry.append(ref)
         else:
             pair_carry.append(ref)
-            output_carry.append([pair_carry[0], pair_carry[1]])
+            output_carry.append([pair_carry[0],pair_carry[1]])
 
         counter = (counter + 1) % 2
         index += 1
-
-    output_carry.append([input_list[-1], input_list[0]])
     return output_carry
 
-def read_objt(path, verbose=False):
 
+def split_range_index(top_number, splits):
+    output = generate_dupla([i for i in range(0, top_number, math.ceil(top_number/splits))])
+    output[-1][1] = top_number
+    return output
+
+
+def read_objt(path, verbose=False):
     if path[-4:] == "objt":
         print("READING-FILE")
         carry_obj = GD.GraphicalObject()
